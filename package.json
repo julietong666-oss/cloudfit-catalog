@@ -1,0 +1,11 @@
+{
+  "name": "cloudfit-catalog",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/logic.test.mjs tests/data.test.mjs tests/auth.test.mjs",
+    "check": "node --check catalog/logic.mjs && node --check catalog/data.mjs && node --check catalog/supabase-config.mjs && node --check catalog/app.mjs && node --check scripts/serve.mjs && node --check catalog/auth.mjs && node --check catalog/auth-ui.mjs",
+    "test:auth:ui": "node tests/serve-auth-fixtures.mjs"
+  }
+}

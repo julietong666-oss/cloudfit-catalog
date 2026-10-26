@@ -1,0 +1,11 @@
+{
+  "package": "demo_customers_owner_v1",
+  "status": "PREVIEW_NOT_APPROVED_NOT_APPLIED",
+  "project_ref": "qibpsehkmzjwusllorbf",
+  "sql_preview": "supabase/demo-customers-owner-v1.preview.sql",
+  "sql_sha256": "6bd890df93b2880fa79b1fd0883448d1ba583f43d80dd87ccfd388d020a31e48",
+  "ui_status": "behavior_spec_only_not_implemented",
+  "remote_operations_this_turn": "read-only SELECT",
+  "legacy_rows": "proposed NULL ownership, retained and quarantined; requires exact-package approval",
+  "auth_AB": "no live users; only fixture checked"
+}

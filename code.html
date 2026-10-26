@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>CloudFit for Startups</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary": "#795900", "inverse-on-surface": "#f1f0f4", "tertiary-container": "#987000", "tertiary-fixed": "#ffdfa0", "outline-variant": "#c1c6d6", "on-tertiary-fixed-variant": "#5c4300", "primary-fixed": "#d8e2ff", "on-primary-fixed": "#001a41", "primary-fixed-dim": "#adc7ff", "secondary-fixed": "#89fa9b", "on-tertiary-fixed": "#261a00", "on-surface": "#1a1b1e", "surface-container-highest": "#e3e2e6", "error-container": "#ffdad6", "on-surface-variant": "#414754", "surface-bright": "#faf9fd", "surface-container-low": "#f4f3f7", "primary": "#005bbf", "on-secondary": "#ffffff", "surface-dim": "#dbd9dd", "surface-container-high": "#e9e7eb", "secondary-fixed-dim": "#6ddd81", "on-tertiary": "#ffffff", "surface": "#faf9fd", "on-secondary-fixed-variant": "#005320", "surface-container": "#efedf1", "inverse-primary": "#adc7ff", "on-secondary-fixed": "#002108", "error": "#ba1a1a", "on-secondary-container": "#00722f", "on-primary": "#ffffff", "on-background": "#1a1b1e", "outline": "#727785", "on-primary-container": "#ffffff", "on-error": "#ffffff", "surface-tint": "#005bc0", "tertiary-fixed-dim": "#fbbc05", "surface-variant": "#e3e2e6", "inverse-surface": "#2f3033", "on-tertiary-container": "#ffffff", "surface-container-lowest": "#ffffff", "secondary": "#006e2c", "background": "#faf9fd", "on-error-container": "#93000a", "primary-container": "#1a73e8", "secondary-container": "#86f898", "on-primary-fixed-variant": "#004493" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.5rem", "space-xl": "2rem", "space-lg": "1.5rem", "gutter-mobile": "1rem", "margin": "2rem", "space-md": "1rem", "margin-mobile": "1rem", "gutter": "1.5rem", "space-xs": "0.25rem" }, "fontFamily": { "label-lg": [ "Be Vietnam Pro" ], "display-lg": [ "Be Vietnam Pro" ], "label-sm": [ "Be Vietnam Pro" ], "headline-sm": [ "Be Vietnam Pro" ], "body-md": [ "Be Vietnam Pro" ], "display-lg-mobile": [ "Be Vietnam Pro" ], "headline-lg": [ "Be Vietnam Pro" ], "body-sm": [ "Be Vietnam Pro" ], "headline-md": [ "Be Vietnam Pro" ], "body-lg": [ "Be Vietnam Pro" ], "code-sm": [ "Space Mono" ], "label-md": [ "Be Vietnam Pro" ] }, "fontSize": { "label-lg": [ "14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" } ], "display-lg": [ "40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600" } ], "headline-sm": [ "18px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" } ], "body-md": [ "14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ], "display-lg-mobile": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "headline-lg": [ "28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "body-sm": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ], "code-sm": [ "12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" } ] } } } };</script><link rel="stylesheet" href="catalog/catalog.css"/><script type="module" src="catalog/app.mjs"></script><script defer src="catalog/vendor/supabase-2.118.0.js"></script><script type="module" src="catalog/auth-ui.mjs"></script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-margin flex items-center justify-between gap-space-lg"><div class="flex items-center gap-space-xl"><a class="flex items-center gap-space-sm" data-path="kham-pha" href="#"><div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.06)]"><span class="material-symbols-outlined text-primary text-[24px]">cloud_done</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-semibold">CloudFit</span><span class="px-space-xs py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">GCP</span></div><span class="font-label-sm text-label-sm text-on-surface-variant leading-none">for Startups</span></div></a><div class="relative hidden xl:block w-72"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-outline text-[18px]">search</span></div><input class="w-full h-9 pl-9 pr-14 bg-surface-container-low rounded-full font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-all" id="headerSearch" aria-label="Tìm kiếm sản phẩm trong danh mục" placeholder="Tìm sản phẩm Google Cloud..." type="text"/><div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"><kbd class="font-code-sm text-code-sm text-outline bg-surface-container px-1.5 py-0.5 rounded">Tìm</kbd></div></div><nav class="hidden lg:flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-full"><a class="px-space-md py-1.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="kham-pha" href="#">Khám phá</a><a class="px-space-md py-1.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="so-sanh-goi" href="#">So sánh gói</a><a class="px-space-md py-1.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="goi-da-luu" href="#">Gói đã lưu</a><a class="px-space-md py-1.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="tu-van-1-1" href="#">Tư vấn 1-1</a><a class="px-space-md py-1.5 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="tai-lieu-kien-truc" href="#">Tài liệu kiến trúc</a></nav></div><div class="flex items-center gap-space-md"><div class="relative"><button aria-label="Thông báo" class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-on-surface-variant text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-error border-2 border-surface-container-lowest"></span></button></div><a id="identity-link" class="cf-identity-link" href="#identity">Đăng nhập</a></div></div></header><main class="w-full pt-16 bg-surface">
+<section id="identity" class="cf-identity" aria-labelledby="identity-heading" aria-busy="true">
+  <h2 id="identity-heading">Tài khoản</h2>
+  <p id="identity-current" aria-live="polite">Đang kiểm tra phiên…</p>
+  <p class="cf-identity-note">Đăng ký cần xác nhận email. Quyền Admin được cấp riêng bởi người quản trị.</p>
+  <form aria-label="Đăng nhập hoặc đăng ký">
+    <label for="identity-email">Email</label>
+    <input id="identity-email" name="email" type="email" autocomplete="username" required maxlength="254" disabled>
+    <label for="identity-password">Mật khẩu</label>
+    <input id="identity-password" name="password" type="password" autocomplete="current-password" required minlength="1" disabled>
+    <button id="identity-submit" type="submit" disabled>Đăng nhập</button>
+  </form>
+  <button id="identity-toggle" type="button" disabled>Chưa có tài khoản? Đăng ký</button>
+  <button id="identity-logout" type="button" hidden>Đăng xuất</button>
+  <p id="identity-message" role="status" aria-live="polite"></p>
+  <button id="identity-retry" type="button" hidden>Kiểm tra lại phiên</button>
+</section>
+<div class="flex flex-col w-full">
+<!-- Subtle Gradient Backdrop for Desktop Cleanroom Feel -->
+<div class="relative w-full overflow-hidden">
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[1100px] h-[480px] bg-gradient-to-b from-primary/10 via-primary-fixed/20 to-transparent blur-3xl pointer-events-none -z-10 rounded-full"></div>
+<div class="absolute top-80 right-[-100px] w-96 h-96 bg-secondary-fixed/30 blur-3xl pointer-events-none -z-10 rounded-full"></div>
+<!-- Section 1: Hero & Value Proposition -->
+<div class="w-full px-margin pt-10 pb-8 flex flex-col items-center text-center">
+<!-- Modern Badge -->
+<div class="inline-flex items-center gap-space-xs px-space-md py-1 rounded-full bg-surface-container-lowest shadow-sm mb-space-md">
+<span class="text-[15px]">🚀</span>
+<span class="font-label-md text-label-md text-primary font-medium tracking-wide">Giải pháp điện toán đám mây tinh gọn cho Startup Việt</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-code-sm text-code-sm text-on-surface-variant font-medium">GCP v2.4</span>
+</div>
+<!-- Bold Headline -->
+<h1 class="font-display-lg text-display-lg text-on-surface max-w-4xl tracking-tight leading-tight mb-space-sm">
+        Tìm giải pháp Google Cloud <span class="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">chuẩn xác</span> cho Startup của bạn
+      </h1>
+<!-- Subtitle -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl leading-relaxed mb-space-xl">
+        Tiết kiệm tới <strong class="text-on-surface font-semibold text-secondary">45% chi phí hạ tầng</strong>, tự động hóa mở rộng từ 0 lên 100,000+ người dùng không cần đội ngũ DevOps cồng kềnh.
+      </p>
+</div>
+<section id="catalog" aria-labelledby="catalog-heading">
+<p class="cf-notice">Dữ liệu demo từ Supabase • Giá và nội dung gói chưa được xác minh. Khách hàng bên dưới hoàn toàn giả lập.</p>
+<div id="catalog-list">
+<h2 id="catalog-heading">Khám phá giải pháp Google Cloud</h2>
+<p>Tìm sản phẩm theo tên, mô tả và nhu cầu của bạn.</p>
+<label for="searchInput">Tìm kiếm sản phẩm</label>
+<div class="cf-search">
+<input id="searchInput" type="search" placeholder="Tìm sản phẩm Google Cloud..." aria-controls="catalog-results"/>
+<button id="clear-query" type="button" hidden aria-label="Xóa từ khóa">Xóa</button>
+</div>
+<div id="catalog-filters" class="cf-filters" role="group" aria-label="Lọc theo nhu cầu"></div>
+<div class="cf-summary">
+<p id="catalog-count" role="status" aria-live="polite" aria-atomic="true"></p>
+<button id="reset-all" type="button">Đặt lại tất cả</button>
+</div>
+<div id="catalog-results"></div>
+</div>
+<div id="catalog-detail" hidden></div>
+<section aria-labelledby="customers-heading" class="cf-customers">
+<h2 id="customers-heading">Khách hàng demo</h2>
+<p>Dữ liệu giả lập để xem thử kết nối; không có thông tin khách hàng thật.</p>
+<div id="customer-results" aria-live="polite" aria-busy="true"></div>
+</section>
+<noscript>Vui lòng bật JavaScript để tìm kiếm và lọc sản phẩm.</noscript>
+</section>
+<details class="w-full px-margin pb-8">
+<summary class="cf-notice">Bản mẫu giao diện gốc — nội dung gói, giá và tuyên bố bên dưới chưa được xác minh; không thuộc danh mục sản phẩm được duyệt.</summary>
+<!-- Section 2: Interactive 2-Column Section (AI Matcher + Realtime Metrics) -->
+<div class="w-full px-margin py-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-stretch">
+<!-- Left: AI Solution Matcher Card (8 cols) -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-3xl p-space-xl shadow-md flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-16 -top-16 w-52 h-52 bg-primary/5 rounded-full pointer-events-none"></div>
+<div>
+<!-- Header step info -->
+<div class="flex items-center justify-between pb-space-lg mb-space-lg bg-surface-container-low/60 -mx-space-xl -mt-space-xl px-space-xl pt-space-xl rounded-t-3xl">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[24px]">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-2">
+                    Trợ lý cấu hình nhanh (AI Solution Matcher)
+                    <span class="font-label-sm text-label-sm bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full">Khuyên dùng</span>
+</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Chọn nhu cầu của bạn để nhận kiến trúc mẫu Google Cloud tối ưu chi phí trong 30 giây.</p>
+</div>
+</div>
+<!-- Step indicator badge -->
+<div class="hidden sm:flex items-center gap-2 bg-surface-container-lowest px-3 py-1.5 rounded-full shadow-sm">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Khảo sát 2 bước</span>
+</div>
+</div>
+<!-- Step 1: Goal Selection -->
+<div class="mb-space-lg">
+<div class="flex items-center justify-between mb-space-sm">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-primary-container text-on-primary font-code-sm text-[11px] flex items-center justify-center">1</span>
+                  Mục tiêu công nghệ trọng tâm của startup:
+                </label>
+<span class="font-body-sm text-body-sm text-outline" id="selectedGoalLabel">Đã chọn: Web &amp; Mobile App</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-sm" id="goalOptions">
+<!-- Option 1 (Selected) -->
+<button class="goal-card active text-left p-space-md rounded-2xl bg-primary-fixed/40 transition-all cursor-pointer relative group flex flex-col justify-between h-28" data-goal="web-app" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="material-symbols-outlined text-primary text-[26px]">devices</span>
+<span class="check-icon material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface font-semibold leading-snug">Web &amp; Mobile App</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[11px]">MVP, Full-stack SaaS</p>
+</div>
+</button>
+<!-- Option 2 -->
+<button class="goal-card text-left p-space-md rounded-2xl bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer relative group flex flex-col justify-between h-28" data-goal="ai-data" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary text-[26px]">smart_toy</span>
+<span class="check-icon hidden material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface font-semibold leading-snug">AI &amp; Dữ liệu lớn</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[11px]">GenAI, RAG, BigQuery</p>
+</div>
+</button>
+<!-- Option 3 -->
+<button class="goal-card text-left p-space-md rounded-2xl bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer relative group flex flex-col justify-between h-28" data-goal="workspace" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary text-[26px]">workspaces</span>
+<span class="check-icon hidden material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface font-semibold leading-snug">Lưu trữ &amp; Văn phòng</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[11px]">Workspace, Colab, Drive</p>
+</div>
+</button>
+<!-- Option 4 -->
+<button class="goal-card text-left p-space-md rounded-2xl bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer relative group flex flex-col justify-between h-28" data-goal="devops" type="button">
+<div class="flex items-center justify-between w-full">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary text-[26px]">account_tree</span>
+<span class="check-icon hidden material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h4 class="font-label-lg text-label-lg text-on-surface font-semibold leading-snug">DevOps &amp; GKE</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[11px]">Microservices, CI/CD</p>
+</div>
+</button>
+</div>
+</div>
+<!-- Step 2: Scale & Budget Selection -->
+<div class="mb-space-lg">
+<div class="flex items-center justify-between mb-space-sm">
+<label class="font-label-lg text-label-lg text-on-surface font-semibold flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-primary-container text-on-primary font-code-sm text-[11px] flex items-center justify-center">2</span>
+                  Quy mô người dùng &amp; Ngân sách dự kiến mỗi tháng:
+                </label>
+<span class="font-body-sm text-body-sm text-secondary font-medium" id="selectedBudgetLabel">&lt; $100 / tháng (Khởi tạo)</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm" id="budgetOptions">
+<!-- Tier 1 (Active) -->
+<button class="budget-card active text-left p-space-md rounded-2xl bg-secondary-container/30 transition-all cursor-pointer flex items-center justify-between" data-budget="starter" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold font-code-sm text-sm">
+                      $
+                    </div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface font-bold">&lt; $100 / tháng</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Khởi tạo • MVP • &lt; 50k MAU</div>
+</div>
+</div>
+<span class="radio-dot w-4 h-4 rounded-full bg-secondary"></span>
+</button>
+<!-- Tier 2 -->
+<button class="budget-card text-left p-space-md rounded-2xl bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer flex items-center justify-between" data-budget="growth" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center font-bold font-code-sm text-sm">
+                      $$
+                    </div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface font-bold">$100 - $500 / tháng</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Tăng trưởng • 50k - 200k MAU</div>
+</div>
+</div>
+<span class="radio-dot w-4 h-4 rounded-full bg-surface-container-highest"></span>
+</button>
+<!-- Tier 3 -->
+<button class="budget-card text-left p-space-md rounded-2xl bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer flex items-center justify-between" data-budget="scale" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center font-bold font-code-sm text-sm">
+                      $$$
+                    </div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface font-bold">&gt; $500 / tháng</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Mở rộng • Đa vùng • Enterprise</div>
+</div>
+</div>
+<span class="radio-dot w-4 h-4 rounded-full bg-surface-container-highest"></span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Action Bar & Credit Note -->
+<div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md bg-surface-container-low/50 -mx-space-xl -mb-space-xl p-space-lg rounded-b-3xl">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">card_giftcard</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-semibold">Tặng $1,000 - $2,000 Google Cloud Credits</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Áp dụng trực tiếp vào tài khoản thanh toán cho startup hội đủ điều kiện.</p>
+</div>
+</div>
+<button class="w-full sm:w-auto px-space-xl py-3 rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 shrink-0" id="triggerRecommendBtn" type="button">
+<span>Xem đề xuất gói tối ưu nhất</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Right: Quick Insights & Metrics Widget (4 cols) -->
+<div class="lg:col-span-4 flex flex-col justify-between gap-space-md">
+<!-- Metric Card 1 -->
+<div class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm flex flex-col justify-between flex-1 relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_down</span>
+                Tiết kiệm thực tế
+              </span>
+<span class="font-code-sm text-code-sm text-outline">Q1 / 2025</span>
+</div>
+<div class="my-space-xs">
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-on-surface tracking-tight">78%</span>
+<span class="font-headline-sm text-headline-sm text-secondary font-semibold">Startup</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-snug">
+                tiết kiệm được từ <strong class="text-on-surface">$350+ đến $1,200/tháng</strong> sau khi áp dụng mô hình Serverless Cloud Run thay cho VM truyền thống.
+              </p>
+</div>
+<!-- Mini Inline SVG Chart: Cost Curve Trend -->
+<div class="pt-space-sm">
+<div class="w-full h-12 bg-surface-container-low rounded-xl px-2 flex items-center">
+<svg class="w-full h-8 text-secondary" fill="none" viewbox="0 0 240 32">
+<path d="M0 24 Q 40 22, 70 16 T 140 10 T 200 6 T 240 2" stroke="currentColor" stroke-linecap="round" stroke-width="2.5"></path>
+<path d="M0 24 Q 40 22, 70 16 T 140 10 T 200 6 T 240 2 L 240 32 L 0 32 Z" fill="currentColor" fill-opacity="0.12"></path>
+<circle cx="200" cy="6" fill="currentColor" r="3"></circle>
+</svg>
+</div>
+</div>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm flex flex-col justify-between flex-1 group hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">speed</span>
+                Tốc độ triển khai
+              </span>
+<span class="material-symbols-outlined text-primary text-[20px]">bolt</span>
+</div>
+<div class="my-space-xs">
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-on-surface tracking-tight">&lt; 2 giờ</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-snug">
+                Thời gian trung bình để cấu hình xong toàn bộ cụm Production từ Terraform Blueprints sẵn có của CloudFit.
+              </p>
+</div>
+<div class="flex items-center gap-space-xs pt-space-xs">
+<div class="flex -space-x-2 overflow-hidden">
+<div class="inline-block h-6 w-6 rounded-full bg-primary-container text-on-primary text-[10px] flex items-center justify-center font-bold">VN</div>
+<div class="inline-block h-6 w-6 rounded-full bg-secondary text-on-secondary text-[10px] flex items-center justify-center font-bold">AI</div>
+<div class="inline-block h-6 w-6 rounded-full bg-tertiary-container text-on-tertiary-container text-[10px] flex items-center justify-center font-bold">BK</div>
+</div>
+<span class="font-label-sm text-label-sm text-outline pl-1">Hơn 120+ startup đã lên GCP</span>
+</div>
+</div>
+<!-- Metric Card 3: Localized Support -->
+<div class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm flex flex-col justify-between flex-1 group hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">support_agent</span>
+                Hạ tầng &amp; Kỹ sư
+              </span>
+<span class="font-code-sm text-code-sm text-secondary font-semibold">24/7/365</span>
+</div>
+<div class="my-space-xs">
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Kỹ sư Google Cloud tại Việt Nam</h4>
+<p class="font-body-md text-body-md text-on-surface-variant leading-snug mt-1">
+                Tư vấn trực tiếp bằng tiếng Việt, hỗ trợ xử lý sự cố khẩn cấp và tối ưu hóa hóa đơn định kỳ mỗi quý.
+              </p>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-primary font-label-md text-label-md font-medium cursor-pointer hover:underline">
+<span>Tìm hiểu chính sách Partner Tier</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Pre-architected Solution Stacks (3-column desktop card grid) -->
+<div class="w-full px-margin pt-10 pb-12">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-space-xl gap-space-md">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[20px]">layers</span>
+<span class="font-label-lg text-label-lg text-primary uppercase font-bold tracking-wider">Kiến trúc sẵn sàng triển khai</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">
+            Gói giải pháp đề xuất cho từng giai đoạn
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-1">
+            Được cấu hình chuẩn hóa bởi Solution Architects của Google Cloud, sẵn sàng deploy tự động chỉ với 1 click.
+          </p>
+</div>
+<!-- Filter tabs & Currency Toggle -->
+<div class="flex items-center gap-space-sm bg-surface-container-low p-1 rounded-full shrink-0">
+<button class="currency-toggle px-3 py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm font-bold shadow-sm" data-cur="usd" type="button">USD ($)</button>
+<button class="currency-toggle px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm font-medium" data-cur="vnd" type="button">VND (đ)</button>
+</div>
+</div>
+<!-- 3-Column Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter items-stretch">
+<!-- CARD 1: Highlight - Startup Foundation Stack -->
+<div class="solution-card bg-surface-container-lowest rounded-3xl p-space-xl shadow-md hover:shadow-xl transition-all flex flex-col justify-between relative ring-2 ring-primary/20">
+<!-- Top Floating Tag -->
+<div class="absolute -top-3.5 left-space-lg flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-on-primary shadow-sm font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>Đề xuất hàng đầu • Best Match</span>
+</div>
+<div>
+<!-- Header & Badge -->
+<div class="flex items-start justify-between mt-2 mb-space-md">
+<div>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
+                  Tiết kiệm 30%
+                </span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold mt-2">Startup Foundation Stack</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-snug">
+                  Dành cho ứng dụng web/app giai đoạn MVP đến dưới 50,000 MAU.
+                </p>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center shrink-0 text-on-primary-fixed shadow-sm">
+<span class="material-symbols-outlined text-[28px]">rocket_launch</span>
+</div>
+</div>
+<!-- Price display -->
+<div class="bg-surface-container-low rounded-2xl p-space-md mb-space-lg flex items-baseline justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Chi phí ước tính</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface cost-val-usd">~$68</span>
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface cost-val-vnd hidden">~1,730,000đ</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ tháng</span>
+</div>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-secondary-container/60 px-2 py-1 rounded">Pay-as-you-go</span>
+</div>
+<!-- Services Included -->
+<div class="mb-space-lg">
+<h4 class="font-label-md text-label-md text-outline uppercase font-semibold mb-space-sm tracking-wider">Dịch vụ tích hợp sẵn:</h4>
+<ul class="flex flex-col gap-2.5">
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[14px]">terminal</span>
+</span>
+<span><strong>Cloud Run:</strong> Serverless compute, scale-to-zero khi không có traffic</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[14px]">database</span>
+</span>
+<span><strong>Cloud SQL:</strong> Quản trị PostgreSQL 15, auto-backup tự động</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[14px]">folder_zip</span>
+</span>
+<span><strong>Cloud Storage:</strong> 50GB Multi-Region SSD &amp; CDN cache tĩnh</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[14px]">lock</span>
+</span>
+<span><strong>Firebase Auth:</strong> Đăng nhập OTP/Google/Apple bảo mật</span>
+</li>
+</ul>
+</div>
+<!-- Cam kết -->
+<div class="p-space-sm bg-surface-container rounded-xl flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm mb-space-lg">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<span>Không tốn công vận hành hạ tầng, scale từ 0 request tự động.</span>
+</div>
+</div>
+<!-- CTAs -->
+<div class="flex items-center gap-space-sm pt-space-xs">
+<button class="flex-1 py-3 px-space-md rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold transition-all shadow-sm flex items-center justify-center gap-1" type="button">
+<span>Chi tiết gói</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors" title="So sánh gói" type="button">
+<span class="material-symbols-outlined text-[20px]">balance</span>
+</button>
+</div>
+</div>
+<!-- CARD 2: Trending - Modern AI-Ready SaaS -->
+<div class="solution-card bg-surface-container-lowest rounded-3xl p-space-xl shadow-sm hover:shadow-xl transition-all flex flex-col justify-between relative">
+<!-- Top Tag -->
+<div class="absolute -top-3.5 left-space-lg flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-container text-on-tertiary-container shadow-sm font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">local_fire_department</span>
+<span>Đang thịnh hành • AI First</span>
+</div>
+<div>
+<!-- Header & Badge -->
+<div class="flex items-start justify-between mt-2 mb-space-md">
+<div>
+<span class="px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+                  APAC Latency &lt; 25ms
+                </span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold mt-2">Modern AI-Ready SaaS</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-snug">
+                  Xây dựng ứng dụng tích hợp Trí tuệ Nhân tạo thế hệ mới.
+                </p>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-tertiary-fixed flex items-center justify-center shrink-0 text-on-tertiary-fixed shadow-sm">
+<span class="material-symbols-outlined text-[28px]">neurology</span>
+</div>
+</div>
+<!-- Price display -->
+<div class="bg-surface-container-low rounded-2xl p-space-md mb-space-lg flex items-baseline justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Chi phí ước tính</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface cost-val-usd">~$145</span>
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface cost-val-vnd hidden">~3,690,000đ</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ tháng</span>
+</div>
+</div>
+<span class="font-code-sm text-code-sm text-primary bg-primary-fixed/60 px-2 py-1 rounded">GenAI Stack</span>
+</div>
+<!-- Services Included -->
+<div class="mb-space-lg">
+<h4 class="font-label-md text-label-md text-outline uppercase font-semibold mb-space-sm tracking-wider">Dịch vụ tích hợp sẵn:</h4>
+<ul class="flex flex-col gap-2.5">
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary text-[14px]">psychology</span>
+</span>
+<span><strong>Vertex AI:</strong> Tích hợp Gemini 1.5 Flash / Pro, Embeddings API</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary text-[14px]">developer_board</span>
+</span>
+<span><strong>Cloud Run:</strong> Microservices backend hỗ trợ Python FastAPI / Node</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary text-[14px]">hub</span>
+</span>
+<span><strong>Cloud Firestore:</strong> NoSQL Database thời gian thực kèm Vector Search</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary text-[14px]">monitoring</span>
+</span>
+<span><strong>Cloud Logging &amp; Monitoring:</strong> Cảnh báo token quota thời gian thực</span>
+</li>
+</ul>
+</div>
+<!-- Cam kết -->
+<div class="p-space-sm bg-surface-container rounded-xl flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm mb-space-lg">
+<span class="material-symbols-outlined text-tertiary text-[18px]">bolt</span>
+<span>Sẵn sàng gọi GenAI API tốc độ cực nhanh, cụm máy chủ Singapore/Jakarta.</span>
+</div>
+</div>
+<!-- CTAs -->
+<div class="flex items-center gap-space-sm pt-space-xs">
+<button class="flex-1 py-3 px-space-md rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-lg text-label-lg font-semibold transition-all flex items-center justify-center gap-1" type="button">
+<span>Chi tiết gói</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors" title="So sánh gói" type="button">
+<span class="material-symbols-outlined text-[20px]">balance</span>
+</button>
+</div>
+</div>
+<!-- CARD 3: Smart Workspace & Sync -->
+<div class="solution-card bg-surface-container-lowest rounded-3xl p-space-xl shadow-sm hover:shadow-xl transition-all flex flex-col justify-between relative">
+<div>
+<!-- Header & Badge -->
+<div class="flex items-start justify-between mb-space-md">
+<div>
+<div class="flex items-center gap-1.5 mb-2">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                    Vận hành doanh nghiệp
+                  </span>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
+                    Đồng bộ 100%
+                  </span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Smart Workspace &amp; Sync</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-snug">
+                  Bộ công cụ cộng tác văn phòng, bảo mật danh tính nhân sự.
+                </p>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-secondary-fixed flex items-center justify-center shrink-0 text-on-secondary-fixed shadow-sm">
+<span class="material-symbols-outlined text-[28px]">mark_email_read</span>
+</div>
+</div>
+<!-- Price display -->
+<div class="bg-surface-container-low rounded-2xl p-space-md mb-space-lg flex items-baseline justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Chi phí định mức</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface cost-val-usd">~$6</span>
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface cost-val-vnd hidden">~150,000đ</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ user / tháng</span>
+</div>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container-highest px-2 py-1 rounded">Bản quyền chính hãng</span>
+</div>
+<!-- Services Included -->
+<div class="mb-space-lg">
+<h4 class="font-label-md text-label-md text-outline uppercase font-semibold mb-space-sm tracking-wider">Dịch vụ tích hợp sẵn:</h4>
+<ul class="flex flex-col gap-2.5">
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[14px]">mail</span>
+</span>
+<span><strong>Google Workspace:</strong> Gmail tên miền riêng, Google Docs, Sheets</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[14px]">cloud_done</span>
+</span>
+<span><strong>Shared Drive:</strong> 30GB dung lượng SSD/người dùng kèm phân quyền</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[14px]">badge</span>
+</span>
+<span><strong>Cloud Identity Free:</strong> Quản lý tập trung tài khoản và phân quyền nhân viên</span>
+</li>
+<li class="flex items-center gap-2.5 font-body-sm text-body-sm text-on-surface">
+<span class="w-5 h-5 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[14px]">phonelink_lock</span>
+</span>
+<span><strong>2-Step Verification:</strong> Khóa bảo mật phần cứng Titan &amp; mã hóa SSL</span>
+</li>
+</ul>
+</div>
+<!-- Cam kết -->
+<div class="p-space-sm bg-surface-container rounded-xl flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm mb-space-lg">
+<span class="material-symbols-outlined text-secondary text-[18px]">security</span>
+<span>Email tên miền riêng chuyên nghiệp, bảo mật 2 lớp chuẩn Google Enterprise.</span>
+</div>
+</div>
+<!-- CTAs -->
+<div class="flex items-center gap-space-sm pt-space-xs">
+<button class="flex-1 py-3 px-space-md rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-lg text-label-lg font-semibold transition-all flex items-center justify-center gap-1" type="button">
+<span>Chi tiết gói</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors" title="So sánh gói" type="button">
+<span class="material-symbols-outlined text-[20px]">balance</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 4: Google for Startups Cloud Program Banner (Full-Width Modern Banner) -->
+<div class="w-full px-margin pb-16">
+<div class="relative w-full rounded-3xl overflow-hidden bg-gradient-to-r from-primary via-primary-container to-[#1557b0] text-on-primary p-space-xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-space-xl">
+<!-- Decorative subtle background circles -->
+<div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
+<div class="absolute left-1/3 -top-24 w-60 h-60 rounded-full bg-white/5 blur-xl pointer-events-none"></div>
+<!-- Left Content -->
+<div class="relative z-10 max-w-2xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md font-label-sm text-label-sm text-white mb-space-md">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim">verified</span>
+<span>Chương trình Google for Startups Cloud Partner Official</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-white font-bold tracking-tight mb-space-xs">
+            Thành lập dưới 5 năm? Nhận tới $2,000 Cloud Credits
+          </h3>
+<p class="font-body-lg text-body-lg text-white/90 leading-relaxed max-w-xl">
+            Kèm tư vấn kiến trúc 1-1 miễn phí từ đội ngũ Kỹ sư Giải pháp Google Cloud tại Việt Nam. Không cam kết tài chính, duyệt hồ sơ nhanh trong 48 giờ.
+          </p>
+<div class="flex items-center gap-space-lg pt-space-md text-white/80 font-body-sm text-body-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary-fixed">check_circle</span>
+<span>Credits có hiệu lực 2 năm</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary-fixed">check_circle</span>
+<span>Miễn phí phí mở tài khoản GCP</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary-fixed">check_circle</span>
+<span>Xuất hóa đơn VAT Việt Nam</span>
+</div>
+</div>
+</div>
+<!-- Right CTA Button -->
+<div class="relative z-10 shrink-0 w-full md:w-auto flex flex-col items-center sm:items-end gap-2">
+<button class="w-full sm:w-auto px-space-xl py-4 rounded-full bg-surface-container-lowest text-primary hover:bg-surface-bright font-headline-sm text-headline-sm font-bold shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2" type="button">
+<span>Kiểm tra điều kiện nhận Credits</span>
+<span class="material-symbols-outlined text-[22px]">north_east</span>
+</button>
+<span class="font-label-sm text-label-sm text-white/70">Dành riêng cho doanh nghiệp đăng ký tại Việt Nam</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    // 1. Interactive Step Selection Logic
+    const goalCards = document.querySelectorAll('.goal-card');
+    const goalLabel = document.getElementById('selectedGoalLabel');
+
+    goalCards.forEach(card => {
+      card.addEventListener('click', () => {
+        goalCards.forEach(c => {
+          c.classList.remove('active', 'bg-primary-fixed/40');
+          c.classList.add('bg-surface-container-low');
+          const chk = c.querySelector('.check-icon');
+          if (chk) chk.classList.add('hidden');
+          const icon = c.querySelector('.material-symbols-outlined');
+          if (icon && !icon.classList.contains('check-icon')) {
+            icon.classList.remove('text-primary');
+            icon.classList.add('text-on-surface-variant');
+          }
+        });
+
+        card.classList.add('active', 'bg-primary-fixed/40');
+        card.classList.remove('bg-surface-container-low');
+        const chk = card.querySelector('.check-icon');
+        if (chk) chk.classList.remove('hidden');
+        const icon = card.querySelector('.material-symbols-outlined');
+        if (icon && !icon.classList.contains('check-icon')) {
+          icon.classList.add('text-primary');
+          icon.classList.remove('text-on-surface-variant');
+        }
+
+        const title = card.querySelector('h4')?.textContent;
+        if (goalLabel && title) {
+          goalLabel.textContent = 'Đã chọn: ' + title;
+        }
+      });
+    });
+
+    const budgetCards = document.querySelectorAll('.budget-card');
+    const budgetLabel = document.getElementById('selectedBudgetLabel');
+
+    budgetCards.forEach(card => {
+      card.addEventListener('click', () => {
+        budgetCards.forEach(c => {
+          c.classList.remove('active', 'bg-secondary-container/30');
+          c.classList.add('bg-surface-container-low');
+          const dot = c.querySelector('.radio-dot');
+          if (dot) {
+            dot.classList.remove('bg-secondary');
+            dot.classList.add('bg-surface-container-highest');
+          }
+        });
+
+        card.classList.add('active', 'bg-secondary-container/30');
+        card.classList.remove('bg-surface-container-low');
+        const dot = card.querySelector('.radio-dot');
+        if (dot) {
+          dot.classList.add('bg-secondary');
+          dot.classList.remove('bg-surface-container-highest');
+        }
+
+        const title = card.querySelector('.font-bold')?.textContent;
+        if (budgetLabel && title) {
+          budgetLabel.textContent = title;
+        }
+      });
+    });
+
+    // 3. Currency Toggle (USD <-> VND)
+    const currencyButtons = document.querySelectorAll('.currency-toggle');
+    const usdPrices = document.querySelectorAll('.cost-val-usd');
+    const vndPrices = document.querySelectorAll('.cost-val-vnd');
+
+    currencyButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        currencyButtons.forEach(b => {
+          b.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'font-bold', 'shadow-sm');
+          b.classList.add('text-on-surface-variant', 'font-medium');
+        });
+
+        btn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'font-bold', 'shadow-sm');
+        btn.classList.remove('text-on-surface-variant', 'font-medium');
+
+        const cur = btn.getAttribute('data-cur');
+        if (cur === 'vnd') {
+          usdPrices.forEach(el => el.classList.add('hidden'));
+          vndPrices.forEach(el => el.classList.remove('hidden'));
+        } else {
+          usdPrices.forEach(el => el.classList.remove('hidden'));
+          vndPrices.forEach(el => el.classList.add('hidden'));
+        }
+      });
+    });
+
+    // 4. Trigger Recommend Button smooth scroll
+    const triggerBtn = document.getElementById('triggerRecommendBtn');
+    triggerBtn?.addEventListener('click', () => {
+      const cards = document.querySelector('.solution-card');
+      if (cards) {
+        cards.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        cards.classList.add('ring-4', 'ring-primary');
+        setTimeout(() => {
+          cards.classList.remove('ring-4', 'ring-primary');
+        }, 1500);
+      }
+    });
+  })();
+</script></details></main><footer class="w-full bg-surface-container-low py-space-xl"><div class="w-full px-margin"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-xl pb-space-lg"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-[22px]">cloud_done</span><span class="font-headline-sm text-headline-sm text-on-surface font-semibold">CloudFit for Startups</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm">Nền tảng tư vấn giải pháp và tối ưu chi phí hạ tầng Google Cloud chuyên biệt cho doanh nghiệp công nghệ và SME Việt Nam.</p><div class="flex items-center gap-space-xs pt-space-xs"><span class="px-space-xs py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">Google Cloud Partner Tier</span></div></div><div><h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-space-sm">Giải pháp hạ tầng</h4><ul class="flex flex-col gap-space-xs"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Gói MVP Tiết kiệm (Cloud Run + Supabase)</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Gói Scale-up (GKE Autopilot + Cloud SQL)</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">AI &amp; Data Lab (Vertex AI + BigQuery)</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Hạ tầng Tuân thủ Dữ liệu Việt Nam</li></ul></div><div><h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-space-sm">Tài nguyên kỹ thuật</h4><ul class="flex flex-col gap-space-xs"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Blueprints Kiến trúc Sẵn sàng</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Công cụ ước tính chi phí VND / USD</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Chính sách hỗ trợ Startup Credit GCP</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Kiểm toán bảo mật theo chuẩn ISO/SOC2</li></ul></div><div><h4 class="font-label-lg text-label-lg text-on-surface font-semibold mb-space-sm">Hỗ trợ &amp; Tư vấn</h4><ul class="flex flex-col gap-space-xs"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Đặt lịch Kiến trúc sư Giải pháp</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Hotline Kỹ thuật: 1800 6820</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Văn phòng: Tầng 18, Bitexco, TP. Hồ Chí Minh</li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface cursor-pointer">support@cloudfit.vn</li></ul></div></div><div class="flex flex-col md:flex-row items-center justify-between pt-space-md bg-surface-container rounded-xl px-space-lg"><p class="font-body-sm text-body-sm text-on-surface-variant">© 2025 CloudFit for Startups. Mọi quyền được bảo lưu. Thiết kế dành cho hệ sinh thái công nghệ Việt Nam.</p><div class="flex items-center gap-space-lg py-space-sm md:py-0"><span class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Điều khoản Dịch vụ</span><span class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface cursor-pointer">Chính sách Quyền riêng tư</span><span class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface cursor-pointer">SLA Cam kết 99.9%</span></div></div></div></footer></body></html>

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "startup-foundation",
+    "name": "Startup Foundation Stack",
+    "shortDescription": "Gói mẫu cho ứng dụng web/app giai đoạn MVP.",
+    "detailDescription": "Gói mẫu cho ứng dụng web/app giai đoạn MVP. Thành phần trong bản mẫu: Cloud Run, Cloud SQL, Cloud Storage và Firebase Auth.",
+    "needTags": [
+      "Lưu trữ",
+      "Tích hợp"
+    ],
+    "sampleNotice": "Gói giải pháp mẫu theo ảnh bạn cung cấp. Giá, thành phần và nhãn nhu cầu chỉ để minh họa, chưa được xác minh hoặc báo giá.",
+    "displayPrice": "~$68 / tháng"
+  },
+  {
+    "id": "modern-ai-saas",
+    "name": "Modern AI-Ready SaaS",
+    "shortDescription": "Gói mẫu cho ứng dụng tích hợp Trí tuệ Nhân tạo.",
+    "detailDescription": "Gói mẫu cho ứng dụng tích hợp Trí tuệ Nhân tạo. Thành phần trong bản mẫu: Vertex AI, Cloud Run, Cloud Firestore, Cloud Logging & Monitoring.",
+    "needTags": [
+      "Lưu trữ",
+      "Tích hợp"
+    ],
+    "sampleNotice": "Gói giải pháp mẫu theo ảnh bạn cung cấp. Giá, thành phần và nhãn nhu cầu chỉ để minh họa, chưa được xác minh hoặc báo giá.",
+    "displayPrice": "~$145 / tháng"
+  },
+  {
+    "id": "smart-workspace",
+    "name": "Smart Workspace & Sync",
+    "shortDescription": "Gói mẫu cho cộng tác văn phòng và quản lý danh tính nhân sự.",
+    "detailDescription": "Gói mẫu cho cộng tác văn phòng và quản lý danh tính nhân sự. Thành phần trong bản mẫu: Google Workspace (Gmail, Docs, Sheets), Shared Drive, Cloud Identity Free và 2-Step Verification.",
+    "needTags": [
+      "Lưu trữ",
+      "Cộng tác"
+    ],
+    "sampleNotice": "Gói giải pháp mẫu theo ảnh bạn cung cấp. Giá, thành phần và nhãn nhu cầu chỉ để minh họa, chưa được xác minh hoặc báo giá.",
+    "displayPrice": "~$6 / người dùng / tháng"
+  }
+]
