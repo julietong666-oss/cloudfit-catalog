@@ -1,5 +1,5 @@
 import { ALL, NEEDS, searchProducts, readState, saveState } from './logic.mjs';
-import { loadProducts, loadDemoCustomers } from './data.mjs';
+import { loadProducts } from './data.mjs';
 
 const root = document.querySelector('#catalog');
 const input = root.querySelector('#searchInput');
@@ -15,8 +15,6 @@ const detail = root.querySelector('#catalog-detail');
 const results = root.querySelector('#catalog-results');
 const summary = root.querySelector('#catalog-count');
 const filters = root.querySelector('#catalog-filters');
-const customerResults = root.querySelector('#customer-results');
-let customers = [];
 
 function element(tag, text, className) {
   const node = document.createElement(tag);
@@ -79,31 +77,6 @@ function render() {
   renderRoute();
 }
 function update() { saveState(storage, state); render(); }
-function renderCustomers() {
-  customerResults.replaceChildren();
-  if (!customers.length) {
-    customerResults.append(element('p', 'Chưa có khách hàng demo.'));
-    return;
-  }
-  const grid = element('div', undefined, 'cf-grid');
-  for (const customer of customers) {
-    const card = element('article', undefined, 'cf-card');
-    const product = products.find(item => item.id === customer.product_id);
-    card.append(element('h3', customer.company_name), element('p', customer.contact_name),
-      element('p', customer.email), element('p', `Gói: ${product?.name ?? customer.product_id}`),
-      element('p', customer.stage, 'cf-tag'));
-    grid.append(card);
-  }
-  customerResults.append(grid);
-}
-async function loadCustomers() {
-  customerResults.setAttribute('aria-busy', 'true');
-  customerResults.replaceChildren(element('p', 'Đang tải khách hàng demo từ Supabase…'));
-  try { customers = await loadDemoCustomers(); renderCustomers(); }
-  catch (error) {
-    customerResults.replaceChildren(element('p', error instanceof Error ? error.message : 'Không tải được khách hàng demo.'), action('Thử tải khách hàng lại', loadCustomers));
-  } finally { customerResults.setAttribute('aria-busy', 'false'); }
-}
 function renderRoute(focus = false) {
   const isDetail = location.hash.startsWith('#product/');
   list.hidden = isDetail; detail.hidden = !isDetail;
@@ -136,7 +109,6 @@ async function loadCatalog() {
   status = 'loading'; render();
   try {
     products = await loadProducts(); status = 'ready';
-    if (customers.length) renderCustomers();
   } catch (error) {
     products = []; status = 'error';
     errorMessage = error instanceof Error ? error.message : 'Dữ liệu không hợp lệ.';
@@ -146,10 +118,9 @@ async function loadCatalog() {
 input.addEventListener('input', () => { state.query = input.value; update(); });
 headerInput?.addEventListener('input', () => {
   state.query = headerInput.value; update();
-  if (list.hidden) location.hash = 'catalog';
+  if (list.hidden || location.hash === '#identity') location.hash = 'catalog';
 });
 root.querySelector('#clear-query').addEventListener('click', () => { state.query = ''; update(); input.focus(); });
 root.querySelector('#reset-all').addEventListener('click', reset);
 window.addEventListener('hashchange', () => renderRoute(location.hash === '#catalog' || location.hash.startsWith('#product/')));
 loadCatalog();
-loadCustomers();

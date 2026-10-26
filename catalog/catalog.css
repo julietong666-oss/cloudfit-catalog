@@ -41,3 +41,7 @@
 .cf-identity :focus-visible, .cf-identity-link:focus-visible { outline: 3px solid #005bbf; outline-offset: 3px; }
 .cf-identity-link { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; }
 @media(max-width: 700px) { .cf-identity { margin: 16px; padding: 20px; } .cf-identity-link { max-width: 150px; } }
+
+#identity[hidden], #public-content[hidden] { display: none !important; }
+.cf-identity h1 { font-size: 24px; font-weight: 700; }
+@media(max-width: 700px) { .cf-identity-link { max-width: 170px; padding-inline: 12px; font-size: 14px; } }

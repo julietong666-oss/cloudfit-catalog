@@ -11,6 +11,15 @@ const toggle = root.querySelector('#identity-toggle');
 const logout = root.querySelector('#identity-logout');
 const retry = root.querySelector('#identity-retry');
 const header = document.querySelector('#identity-link');
+const publicContent = document.querySelector('#public-content');
+function renderIdentityRoute(focus = false) {
+  const identityRoute = location.hash === '#identity';
+  root.hidden = !identityRoute;
+  publicContent.hidden = identityRoute;
+  if (focus && identityRoute) root.querySelector('#identity-heading').focus();
+}
+window.addEventListener('hashchange', () => renderIdentityRoute(true));
+renderIdentityRoute();
 let client;
 let signup = false;
 let busy = false;
@@ -30,7 +39,7 @@ function showUser(user) {
   toggle.hidden = Boolean(user);
   logout.hidden = !user;
   current.textContent = user ? `Đang đăng nhập: ${user.email}` : 'Bạn chưa đăng nhập.';
-  header.textContent = user ? user.email : 'Đăng nhập';
+  header.textContent = user ? user.email : 'Đăng nhập Admin';
 }
 
 async function verifySession(session) {
