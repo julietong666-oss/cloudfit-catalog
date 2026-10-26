@@ -117,3 +117,10 @@ Chưa thể nghiệm thu với sản phẩm thật cho đến khi chủ dự án
 - Chi tiết có nút “Chọn gói này”, chỉ xác nhận lựa chọn trong giao diện; không tạo đơn hoặc thanh toán. Luồng đặt mua thực tế cần nơi nhận đơn và yêu cầu riêng.
 - Kiểm thử sau cập nhật: 10/10 unit tests pass; cú pháp app pass; trình duyệt xác nhận ba thẻ hiển thị, từ khóa Vertex AI khớp đúng một gói, mở đúng chi tiết và hiện xác nhận đúng tên gói.
 - File cập nhật lần này: catalog/products.json, catalog/app.mjs, catalog/catalog.css, tests/logic.test.mjs, README.md.
+
+
+## Build cho Vercel
+
+Chạy `npm run build` để tạo `dist/` gồm đúng 11 file runtime. `index.html` và `code.html` cùng nội dung để cả `/` và `/code.html` hoạt động. `vercel.json` dùng framework Other, bỏ bước install (không có dependency npm), chạy script build và chỉ phục vụ `dist/`. Tài liệu Docs, tests, SQL Supabase và bản sao DB không nằm trong output. `dist/` và `.vercel/` không commit.
+
+Build/deploy không chạy SQL Nhịp 2, không sửa RLS hay cấu hình Auth. Login thật và link xác nhận email trên domain Vercel cần kiểm chứng riêng với tài khoản/email do chủ dự án quản lý.
