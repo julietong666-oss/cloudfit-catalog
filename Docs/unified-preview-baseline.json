@@ -1,0 +1,11 @@
+{
+  "production": "https://cloudfitk.vercel.app",
+  "protected": {
+    "catalog/purchase.mjs": "a68afc0eed8f83f8b19816257fada51583b2a14c61b70c40e9036c0af44516d2",
+    "catalog/supabase-config.mjs": "1df6d6d80e158c5ec807e372ef39584d679fbec466ed18524053104a13b81bfd",
+    "catalog/data.mjs": "70d63b0e131f9bffaf5a7cb3b90af261affcc7829a8d8bfe0351e366fdea6ddb",
+    "supabase/functions/purchase-request/index.ts": "1fc8071788c8c9eb81bda755621c39ce5e05a652881f84d8fbf2c023bbb17950",
+    "supabase/functions/purchase-request/handler.mjs": "752a0908776fa9074cde7d85e2080bead80cb3dd2412c3fef9f3daf9b0c9be25",
+    "supabase/purchase-intake.sql": "5328cc710d776a98dad88e646bbcbc5e46b9493404b89e46e1a3cecd7ee21f31"
+  }
+}

@@ -1,6 +1,6 @@
 # Nhịp 2 — khảo sát và preview để chốt phạm vi
 
-Trạng thái: CHƯA DUYỆT, CHƯA ÁP DỤNG. Không phải migration đã chạy.
+Trạng thái hiện tại: SQL đã được người dùng duyệt và áp dụng dưới migration `20261026163718_demo_customers_owner_v1`. Phần dưới là bản preview lịch sử; trạng thái/chốt thực thi xem `phase-2-application.md`. UI chưa triển khai/deploy trong bước SQL này.
 Khảo sát 2026-10-26, sau khi đọc lại development-plan.md mục 15 và source.
 
 ## Project và hiện trạng thật

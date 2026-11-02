@@ -1,10 +1,10 @@
 # Design Guidelines — Google Cloud Compare
 
 **Tệp đề xuất:** `docs/design-guidelines.md`  
-**Phiên bản:** 0.3 — bản dựng lại theo PRD và phụ lục Buổi 5  
-**Ngày:** 2026-10-26  
+**Phiên bản:** 0.7 — visual Mekong Cloud Horizon đã chốt và tích hợp trên production  
+**Ngày:** 2026-10-30  
 **Trạng thái:** **DRAFT — [CẦN XÁC NHẬN] bản Design Guideline v0.2 gốc chưa được cung cấp để đối chiếu.**  
-**Nguồn:** `project-overview-prd-updated.md`, `development-plan-updated.md` và quyết định AUTH-01…AUTH-04.  
+**Nguồn:** `project-overview-prd-updated.md`, `development-plan-updated.md`, quyết định AUTH-01…AUTH-04 và quyết định bài thử Telegram độc lập ngày 2026-10-30.  
 **Nguyên tắc:** Không xem các đề xuất UI dưới đây là thiết kế đã duyệt; không bổ sung CRM, đơn hàng, chat, lịch hẹn hoặc bảo hành vào MVP.
 
 ## 1. Design direction
@@ -36,6 +36,8 @@
 - Màn hình đăng nhập Admin.
 - Vùng làm việc Admin tối thiểu: thông tin vai trò, nội dung được phép truy cập, đăng xuất.
 - Điểm truy cập tác vụ khóa Admin cho Admin lớn **[CẦN XÁC NHẬN về UI/flow]**, không mặc định tạo dashboard lớn.
+
+**Bài thử ngoài UI MVP [ĐÃ DUYỆT 2026-10-30]:** `telegram-notify` được kiểm thử riêng bằng dữ liệu giả, Admin lớn nhận, kênh liên hệ là số điện thoại. Không bổ sung form đăng ký mua, nút gửi/gửi lại Telegram, màn hình cấu hình bot hoặc dashboard vào UI hiện tại. Xem mục 15.
 
 ### Giai đoạn sau (không đưa vào UI MVP)
 - Tài khoản khách và hồ sơ tự phục vụ.
@@ -150,6 +152,8 @@ Bạn là product designer. Hãy thiết kế mockup responsive cho website **Go
 
 **Ngữ cảnh:** Website giới thiệu và cho tìm/so sánh/chọn các gói phần mềm Google Cloud từ dữ liệu mẫu đã duyệt, phục vụ startup/doanh nghiệp nhỏ. Giới hạn so sánh tối đa 3 mục. Khách xem public không cần đăng nhập. Admin lớn và Admin nhỏ đăng nhập riêng bằng Email + Password (Confirm Email ON); Admin nhỏ chỉ xem dữ liệu được giao. Không thiết kế CRM, thanh toán, đặt hàng, chat, lịch hẹn, bảo hành hoặc tài khoản khách.
 
+**Ràng buộc bài thử Telegram:** bài thử backend độc lập, chưa nối UI. Không thiết kế thêm form mua gói, nút Telegram, cấu hình bot hoặc bảng thông báo từ quyết định bài thử này.
+
 **Màn hình phải tạo:** Public Catalog, Product Detail, Compare Table, Suggestions, giới thiệu/liên hệ, Admin Sign In, Admin Access Surface, Forbidden/Session Expired. Chỉ phác họa màn hình khóa Admin nhỏ ở mức hành động cần xác nhận, vì chi tiết nghiệp vụ còn mở. Thể hiện các trạng thái default/loading/empty/error và thành công phù hợp từng màn hình.
 
 **Luồng:** Khách tìm → lọc → chi tiết → so sánh tối đa 3 → chọn trong UI. Admin đăng nhập → kiểm tra role → vào vùng được cấp quyền → đăng xuất. Khi bị khóa/hết phiên hoặc khi tải lại F5, không xuất hiện dữ liệu riêng trước lúc kiểm tra lại quyền.
@@ -170,3 +174,87 @@ Bạn là product designer. Hãy thiết kế mockup responsive cho website **Go
 - **[CẦN XÁC NHẬN]** Tên route, màn hình và cách cấp/khóa Admin trên giao diện.
 - **[CẦN XÁC NHẬN]** Giá đã duyệt, nội dung giới thiệu, ngôn ngữ chính thức, thương hiệu, breakpoint/spacing gốc.
 - Không chỉnh schema hoặc bật Auth chỉ vì UI Spec Prompt mô tả các trạng thái.
+
+
+---
+
+## 15. Quy ước nội dung và phản hồi — Bài thử Telegram độc lập
+
+**[ĐÃ DUYỆT 2026-10-30]:** bài thử độc lập; Admin lớn nhận qua cuộc trò chuyện Telegram riêng dùng cho bài thử; thông tin liên hệ tối thiểu là số điện thoại. Phần này đồng bộ với mục 16 của `development-plan-updated.md`. Không thay đổi D-07, phạm vi màn hình hoặc component MVP. Các đề xuất thị giác khác trong tài liệu vẫn giữ trạng thái chờ xác nhận.
+
+### Luồng thử và nội dung thông báo
+
+- Tạo yêu cầu giả → DB xác nhận lưu thành công → backend `telegram-notify` gửi Telegram → Admin lớn kiểm tra thông báo.
+- Test function riêng trước khi nối UI; chưa nối UI trong phạm vi bài thử.
+- Không phát thông báo từ nút “Chọn gói”, thao tác tải lại hoặc sửa bản ghi.
+- Tiêu đề: “Có đăng ký mua mới — DỮ LIỆU THỬ”.
+- Nội dung: mã yêu cầu, mã/tên gói, thời điểm tạo, tên người liên hệ và số điện thoại giả. Dùng nhãn rõ ràng, trình bày theo dòng để Admin lớn dễ đối chiếu.
+- Không dùng câu “Đã thanh toán”, “Đã kích hoạt dịch vụ” hoặc “Mua thành công” cho sự kiện đăng ký.
+
+### Phân biệt trạng thái lưu và gửi
+
+Các câu dưới đây dùng cho kết quả bài thử/báo cáo kiểm thử, chưa phải microcopy của màn hình sản phẩm mới. Trạng thái phải có văn bản rõ, không chỉ phân biệt bằng màu.
+
+| Kết quả | Nội dung phản hồi |
+|---|---|
+| DB và Telegram thành công | “Đã lưu yêu cầu thử. Đã gửi thông báo Telegram.” |
+| DB ghi thất bại | “Chưa lưu được yêu cầu thử. Không gửi thông báo Telegram.” |
+| DB thành công, Telegram thất bại | “Đã lưu yêu cầu thử. Gửi thông báo Telegram thất bại.” |
+| DB thành công, Telegram timeout | “Đã lưu yêu cầu thử. Chưa xác định kết quả gửi Telegram; cần kiểm tra trước khi gửi lại.” |
+| Đã gửi thành công trước đó | “Yêu cầu thử đã được gửi thông báo. Không gửi thêm.” |
+
+- DB lỗi: giữ dữ liệu đầu vào để thử lại; không báo đã lưu.
+- Telegram lỗi: bản ghi vẫn còn; gửi lại thủ công theo mã cũ, không tạo lại yêu cầu và không thêm retry tự động.
+- Timeout: không khẳng định đã gửi hoặc chưa gửi khi chưa đủ bằng chứng.
+- Không hiển thị giá trị secret, số điện thoại trong log, hoặc stack trace trong phản hồi lỗi. Tên cấu hình backend duy nhất được ghi là `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
+
+### Kiểm chứng nội dung và ranh giới UI
+
+- [ ] Admin lớn nhận thông báo đúng mã yêu cầu/gói và số điện thoại giả.
+- [ ] Thông báo được nhận biết rõ là dữ liệu thử và không khẳng định đã thanh toán.
+- [ ] Phản hồi phân biệt lưu thất bại, gửi thất bại và kết quả gửi chưa xác định.
+- [ ] DB lỗi không gửi; Telegram lỗi không làm mất bản ghi đã lưu.
+- [ ] Gọi lặp sau khi gửi thành công không thêm thông báo cho cùng yêu cầu.
+- [ ] Không thêm form, nút, route hay màn hình Telegram vào MVP từ bài thử này.
+- [ ] Bằng chứng không chứa secret; chưa đánh dấu đạt trước khi kiểm thử thực tế.
+
+Nếu sau này duyệt tích hợp sản phẩm, thiết kế UI và hành vi đăng ký mua được chốt riêng dựa trên kết quả bài thử; không tự đưa các phản hồi thử nghiệm vào luồng public.
+
+
+## 16. Nội dung thông báo có Gemini — cập nhật đã duyệt 2026-10-30
+
+Phần này cập nhật trạng thái bài thử độc lập ở mục 15: backend Telegram đã chạy thực tế và phương án C đã được duyệt, bổ sung một câu tóm tắt bằng Gemini trước khi gửi. Chưa thêm form, route, nút hay màn hình mua gói vào UI. Xem Development Plan mục 17.2 và 18 để phân biệt trạng thái hiện hành với các mốc thử nghiệm cũ.
+
+- Giữ nguyên nhãn “Có đăng ký mua mới”, mã yêu cầu, gói, thời điểm, người liên hệ, số điện thoại và ghi chú chưa xác nhận thanh toán.
+- Nếu Gemini tạo được nội dung hợp lệ, thêm **“Tóm tắt AI (tham khảo): …”** vào cùng một tin. Không thay thế dữ liệu gốc, không gửi thêm một tin AI riêng.
+- Gemini chỉ nhận tên gói; tên người và số điện thoại vẫn chỉ dùng trong thông báo Telegram đã duyệt. Không có dữ liệu nhu cầu để tự suy diễn lợi ích, giá hay tư vấn.
+- Khi Gemini lỗi, timeout 6 giây hoặc nội dung không hợp lệ: dùng nguyên mẫu thông báo hiện tại, không hiển thị stack trace hoặc giá trị secret. Không để người nhận hiểu là đăng ký chưa được lưu chỉ vì tóm tắt thất bại.
+- Tin thử vẫn ghi rõ DỮ LIỆU THỬ. Ca thực tế đã xác nhận generated và Telegram message ID 8; chưa có xác nhận người nhận đã đọc.
+- Nội dung AI bị giới hạn một câu/360 ký tự, không link, không số điện thoại và không khẳng định thanh toán, kích hoạt hoặc cam kết. Các quy tắc lọc là biện pháp hạn chế, không bảo đảm tuyệt đối nội dung AI luôn đúng; dữ liệu gốc là căn cứ.
+- Không có màn hình nhập API key trong sản phẩm. `GEMINI_API_KEY` chỉ là tên cấu hình backend, không hiện giá trị trong UI/tài liệu/log.
+
+
+## 17. Form đăng ký gói đã phát hành — 2026-10-30
+
+Quyết định mới cho phép nối UI trên `cloudfitk.vercel.app`; các giới hạn “chưa thêm form/chưa nối UI” tại mốc cũ được cập nhật bởi mục này. Luồng tìm/so sánh không bắt buộc đăng nhập Admin.
+
+- Trong chi tiết gói, nút **Đăng ký gói này** mở form ngay trong trang và focus họ tên. Không tạo trang thanh toán hoặc giả lập mua thành công.
+- Trường hiển thị: **Họ và tên**, **Số điện thoại**; checkbox đồng ý liên hệ xử lý đăng ký và thông báo người phụ trách qua Telegram. Nhãn bọc input, autocomplete name/tel, inputMode tel, nội dung dễ đọc, focus rõ, nút tối thiểu 44px.
+- Đang gửi: khóa fieldset và nút, văn bản **Đang tiếp nhận đăng ký…**, aria-busy. Chỉ một hành động chính.
+- Lỗi mạng/DB: giữ input, thông báo chưa xác nhận lưu, nút **Gửi lại** dùng cùng mã yêu cầu. Không tự khẳng định đã lưu hoặc chưa lưu trong trường hợp mất phản hồi.
+- Thành công: **Đã tiếp nhận đăng ký** + mã yêu cầu + ghi chú sẽ liên hệ xác nhận, chưa phát sinh thanh toán; không thể bấm gửi tiếp trên form đã thành công.
+- Không hiện secret hoặc trạng thái model/stack trace với khách. Gemini lỗi dùng mẫu Telegram cũ phía backend, không đổi kết quả tiếp nhận đã lưu.
+- Browser QA mobile/desktop chưa chạy được do Chrome spawn EPERM; không coi CSS responsive là bằng chứng đã nghiệm thu giao diện trên thiết bị. Test API, dữ liệu và production assets đã đạt; kịch bản browser đã chuẩn bị riêng.
+
+
+## 18. Visual source đã xác nhận — Mekong Cloud Horizon
+
+**[ĐÃ DUYỆT 2026-10-30]:** chủ dự án xác nhận dùng `Docs/DESIGN.md` cho phần UI tích hợp. Phần này thay các giả định Roboto/palette chưa đối chiếu cho khu vực được sửa; không tự duyệt các nghiệp vụ còn mở trong tài liệu hoặc các số liệu/quyền thương hiệu minh họa.
+
+- Font Be Vietnam Pro, mã/đánh số dùng Space Mono; primary và tonal surface theo bộ token nguồn. Thẻ gói và panel góc bo 24px, khoảng cách 16/24/32px, CTA pill và input bo 8px, vùng chạm tối thiểu 48px.
+- Thẻ phân cấp nhóm/gói, tên, mô tả, giá mẫu và nhãn; giữ cảnh báo giá chưa xác minh. CTA “Khám phá gói” giữ aria-label xem chi tiết có tên gói.
+- Chi tiết gói: nội dung bên trái, khung đăng ký bên phải trên desktop; xuống một cột trên tablet/mobile. Đăng ký mở form hiện có và focus họ tên; không sửa module hoặc hành vi gửi.
+- Chỉ CSS đồng bộ form, gồm checkbox 20px không giãn hết chiều rộng, nhãn gắn input, consent, focus và trạng thái sẵn có. Không thêm xác nhận gửi Telegram vào UI chỉ từ kết quả đã lưu.
+- Kiểm chứng nguồn/build/HTTP production và hash bảo vệ đạt; browser visual QA chưa có do giới hạn Chrome. Không gắn nhãn thiết kế pixel-perfect hay responsive đã nghiệm thu trên thiết bị.
+
+Production hiện hành: `dpl_XWtBRZ3V5RiWD4QHYPQh2h6uY8XM` tại https://cloudfitk.vercel.app. Mốc đối chiếu và hash giữ nguyên `purchase.mjs`/API ở `ui-production-baseline.json`.

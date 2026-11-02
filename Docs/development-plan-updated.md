@@ -1,8 +1,8 @@
 # Development Plan — Google Cloud Compare
 
 **Tệp:** `docs/development-plan.md`  
-**Phiên bản:** 0.3 — thêm quyết định AUTH-01…04 và hai nhịp thực hiện; cần khảo sát và duyệt schema trước triển khai  
-**Ngày cập nhật:** 2026-10-26  
+**Phiên bản:** 0.10 — tích hợp UI Mekong Cloud Horizon trên production, giữ nguyên purchase/API  
+**Ngày cập nhật:** 2026-10-30  
 **Nguồn:** PRD v0.2 và phụ lục AUTH duyệt 2026-10-26; design v0.2 được viện dẫn nhưng chưa được cung cấp trực tiếp để đối chiếu; quyết định MVP trong hội thoại.  
 **Đích nhận bàn giao:** Codex sau khi các điểm chặn nghiệp vụ được duyệt.  
 **Nhãn:** **[ĐÃ XÁC NHẬN]** — có trong quyết định/PRD; **[ĐỀ XUẤT]** — phương án triển khai chưa duyệt; **[CẦN XÁC NHẬN]** — thiếu quyết định; **[ĐIỂM CHẶN]** — không triển khai logic/phát hành liên quan trước khi có quyết định.
@@ -434,3 +434,264 @@ Không tự thêm thông tin khách hàng, lịch sử thao tác hoặc bảng q
 - [ ] Đối chiếu kiểm thử và nghiệm thu trước khi phát hành.
 
 **Không được khẳng định đã chạy test, bật Confirm Email, sửa Auth hay đổi RLS chỉ từ hồ sơ tài liệu.**
+
+
+---
+
+## 16. Bài thử độc lập — Thông báo Telegram
+
+**Lịch sử quyết định:** giới hạn chỉ làm bài thử độc lập ở mục này đã được yêu cầu mới thay thế bằng phạm vi tích hợp thực tế tại mục 17. Nguyên tắc test function trước nối UI và xử lý lỗi vẫn áp dụng.
+
+**[ĐÃ DUYỆT 2026-10-30]:** thực hiện theo hướng **bài thử độc lập**; **Admin lớn nhận**; kênh liên hệ tối thiểu là **số điện thoại**. Nội dung này ghi nhận quyết định và kế hoạch kiểm thử, chưa phải bằng chứng triển khai hoặc kiểm thử thành công.
+
+**Phạm vi:** kiểm chứng backend `telegram-notify` bằng dữ liệu giả trong môi trường thử. Chưa nối UI, chưa bổ sung luồng đăng ký mua vào MVP. DB-02 và D-07 không được coi là đã đổi bởi bài thử này. API Telegram chưa cần cho hành trình MVP hiện tại vì chưa có sự kiện lưu đăng ký mua; bài thử chỉ kiểm chứng khả năng gửi thông báo. Đưa tích hợp vào sản phẩm cần được duyệt riêng. Không tạo project, bảng hoặc đổi schema/quyền chỉ từ việc cập nhật tài liệu này.
+
+### Trigger
+
+- Tạo một yêu cầu đăng ký mua giả trong môi trường thử; chỉ gửi Telegram sau khi DB xác nhận lưu thành công.
+- Không kích hoạt từ thao tác chọn gói, tải lại trang hoặc sửa bản ghi.
+- Thông báo mang nghĩa “Có đăng ký mua mới”, không xác nhận thanh toán.
+- Đối tượng bài thử là yêu cầu đăng ký mua; nguyên tắc bảo toàn bản ghi không bổ sung nghiệp vụ khoản chi.
+
+### Dữ liệu gửi
+
+Chỉ gửi mã yêu cầu, mã và tên gói phần mềm, thời điểm tạo, tên người liên hệ và số điện thoại. Bài thử dùng toàn bộ dữ liệu giả; không gửi hồ sơ khách hàng, dữ liệu thanh toán hoặc nội dung tự do.
+
+### Backend `telegram-notify`
+
+- Chạy phía backend; kiểm tra bản ghi đã lưu trước khi gửi. Không cho trình duyệt gọi tùy ý để gửi tin.
+- Người nhận: Admin lớn, qua cuộc trò chuyện Telegram riêng dùng cho bài thử.
+- Trả kết quả gửi thành công, thất bại hoặc chưa xác định gắn với mã yêu cầu; phân biệt trạng thái lưu DB và trạng thái gửi Telegram.
+- Gọi lặp sau lần gửi thành công không gửi thêm thông báo cho cùng yêu cầu.
+- Tên function là giao ước cho bài thử, chưa khẳng định module đã tồn tại. Vị trí, môi trường chạy và cách lưu trạng thái được đề xuất sau khảo sát, không mặc định tạo thêm hạ tầng.
+
+### Quản lý secret
+
+- Chỉ cấu hình phía backend: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`.
+- Tài liệu chỉ ghi tên; không đưa giá trị vào frontend, repository, tài liệu hoặc log; không yêu cầu gửi qua chat.
+
+### Ứng xử khi lỗi
+
+- **DB lỗi:** không gọi Telegram, không báo “đã lưu”; giữ dữ liệu đầu vào để thử lại.
+- **Telegram lỗi:** giữ nguyên bản ghi đã lưu; ghi nhận trạng thái thất bại và mã yêu cầu, không ghi secret hoặc số điện thoại vào log. Không rollback hoặc yêu cầu tạo lại bản ghi vì lỗi gửi.
+- Gửi lại thủ công bằng mã yêu cầu đã lưu; không tạo bản ghi mới. Chưa triển khai retry tự động.
+- Nếu timeout khiến kết quả gửi chưa rõ, ghi nhận “chưa xác định”; kiểm tra trước khi gửi lại để hạn chế trùng, không tự đánh dấu chưa gửi hoặc đã gửi.
+
+### Cách kiểm thử
+
+**Test function riêng trước khi nối UI.** Chưa thực hiện kết nối UI trong bài thử này. Kiểm thử các nhánh lỗi bằng dữ liệu giả và mô phỏng lỗi, không làm hỏng cấu hình đang dùng.
+
+| Ca thử | Tiêu chuẩn đạt có thể quan sát |
+|---|---|
+| DB lưu thành công, Telegram hoạt động | Đọc lại được bản ghi; Admin lớn nhận thông báo khớp mã yêu cầu, gói và dữ liệu giả |
+| DB ghi thất bại | Không gọi Telegram; kết quả không báo đã lưu |
+| Telegram trả lỗi | Bản ghi vẫn đọc lại được; kết quả thể hiện lưu thành công, gửi thất bại |
+| Gửi lại sau lỗi xác định | Dùng đúng bản ghi cũ; không tạo thêm yêu cầu |
+| Gọi lặp sau khi gửi thành công | Không phát sinh thêm thông báo cho cùng yêu cầu |
+| Telegram timeout | Bản ghi còn nguyên; trạng thái gửi là chưa xác định |
+| Rà cấu hình và log | Không có giá trị secret hoặc số điện thoại trong log; cấu hình bí mật chỉ ở backend |
+
+**Bằng chứng nghiệm thu:** mã bản ghi thử, kết quả đọc lại DB, kết quả function và thông báo Admin lớn nhận được. Chỉ ghi “đạt” sau khi chạy kiểm thử thực tế; hồ sơ bằng chứng không chứa secret.
+
+**Thứ tự:** khảo sát môi trường thử và cơ chế lưu → chuẩn bị dữ liệu giả → kiểm thử function riêng và các nhánh lỗi → ghi bằng chứng → chủ dự án đánh giá bài thử. Chỉ đề xuất nối UI/tích hợp sản phẩm khi có quyết định riêng.
+
+
+---
+
+## 17. Tích hợp Telegram thực tế — Yêu cầu đăng ký mua gói mới
+
+**[ĐÃ DUYỆT 2026-10-30]:** chủ dự án cho phép cập nhật plan, tích hợp Telegram bot trong Supabase và triển khai thông báo thực tế. “Task mới” đã được xác nhận là **yêu cầu đăng ký mua gói mới**, không phải bảng công việc riêng. Người nhận vẫn là **Admin lớn**, kênh liên hệ là **số điện thoại**.
+
+**Quyết định project [ĐÃ XÁC NHẬN]:** giữ `cloudfit-internal` (`qibpsehkmzjwusllorbf`). Không chuyển sang `zrgddjxvypyjkviaqctd`, không đổi cấu hình catalog và không tạo bản sao dữ liệu sang project khác. Chủ dự án sẽ kết nối lại tài khoản có quyền truy cập.
+
+### Phạm vi và quan hệ với MVP cũ
+
+- Cho phép bổ sung backend lưu yêu cầu mua tối thiểu và thông báo Telegram; đây là thay đổi phạm vi so với DB-02 và phụ lục Auth trước đây. Không bổ sung giỏ hàng, thanh toán, kích hoạt dịch vụ hoặc CRM.
+- Kiểm thử function riêng trước khi nối luồng tạo yêu cầu. Không biến thao tác “Chọn gói” hiện tại thành xác nhận đã mua hoặc đã thanh toán.
+- D-07 về thiết kế/hành vi UI chưa được coi là chốt toàn bộ. Đối chiếu luồng tạo yêu cầu hiện có sau khi lấy lại quyền project; nếu chưa có thì trình hợp đồng lưu và UI tối thiểu trước khi nối. Không tuyên bố website đã có form gửi yêu cầu khi chưa triển khai.
+
+### Trigger
+
+- Một bản ghi yêu cầu đăng ký mua mới đã commit thành công trong DB.
+- Trigger/hàng đợi chỉ phát sinh ở INSERT; UPDATE, tải lại trang hoặc chọn gói trong bộ nhớ không gửi thông báo.
+- Kiểm tra bản ghi tồn tại từ DB ở backend; không tin payload trình duyệt như bằng chứng đã lưu.
+- Cơ chế gọi function và theo dõi trạng thái được chốt theo schema thực tế; không gọi mạng đồng bộ khiến Telegram lỗi làm hủy bản ghi yêu cầu.
+
+### Dữ liệu gửi
+
+Mã yêu cầu, mã/tên gói, thời điểm tạo, tên người liên hệ và số điện thoại. Lấy từ bản ghi đã lưu; không gửi toàn bộ hồ sơ hoặc dữ liệu thanh toán. Ca nghiệm thu dùng dữ liệu giả, gắn nhãn rõ “DỮ LIỆU THỬ”.
+
+### Backend `telegram-notify`
+
+- Triển khai Supabase Edge Function trên đúng project đã chọn; chỉ cho backend/trigger được xác thực gọi, không mở endpoint gửi tin tùy ý ra công khai.
+- Người nhận cố định là Admin lớn theo cấu hình backend; client không được chọn chat nhận.
+- Lưu trạng thái gửi gắn với mã yêu cầu; kiểm soát gọi lặp/đồng thời trước khi gửi. Không gửi lại bản ghi đã xác nhận gửi thành công.
+- Gửi lại thủ công cho lỗi xác định; chưa tự thêm retry định kỳ. Timeout hoặc kết quả không rõ phải chuyển trạng thái chưa xác định để kiểm tra trước khi gửi lại.
+- Chỉ tạo hoặc sửa schema sau khi đọc bảng/quyền hiện có. Giữ nguyên dữ liệu, Auth và RLS không liên quan; không mở quyền đọc công khai danh sách yêu cầu hoặc số điện thoại.
+
+### Quản lý secret
+
+Chỉ ghi tên `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`; cấu hình trong Supabase Edge Function Secrets, không trong frontend, repository, tài liệu hoặc log. Không yêu cầu giá trị qua chat. Xác thực nội bộ tận dụng cơ chế Supabase phù hợp sau khảo sát, không đưa khóa quản trị vào client.
+
+### Ứng xử khi lỗi
+
+- **DB lỗi:** không gửi Telegram, không báo đã lưu; giữ input để thử lại.
+- **Telegram lỗi:** bản ghi đã lưu còn nguyên; kết quả lưu và kết quả gửi là hai trạng thái riêng. Log chỉ mã yêu cầu và mã lỗi an toàn, không ghi số điện thoại, token, chat ID hoặc URL chứa token.
+- **Timeout/kết quả không rõ:** không tự kết luận chưa gửi, không tự gửi lại gây trùng.
+- **Ghi trạng thái sau gửi lỗi:** không tự gửi lần nữa; đối chiếu Telegram và bản ghi trước khi phục hồi. Không cam kết gửi đúng một lần tuyệt đối khi phía Telegram không cung cấp cơ chế chống trùng cho yêu cầu gửi.
+
+### Cách kiểm thử và nghiệm thu
+
+1. Chạy test riêng phần gửi với HTTP giả lập: thành công, thiếu cấu hình, bị Telegram từ chối, timeout, lỗi mạng/kết quả không rõ. Không dùng secret thật trong fixture.
+2. Sau khi được quyền project: kiểm tra bảng, policy, trigger, function và cấu hình hiện có; triển khai các phần đã đối chiếu.
+3. Gọi function riêng với bản ghi thử đã lưu; xác nhận Admin lớn nhận đúng thông báo, ghi mã bản ghi và kết quả gửi làm bằng chứng.
+4. Kiểm thử INSERT sau commit → trigger → function → Telegram; DB rollback/lỗi không phát tin; Telegram lỗi không xóa bản ghi.
+5. Kiểm thử gọi lặp/đồng thời, gửi lại lỗi xác định, timeout; người ngoài bị chặn đọc danh sách và gọi endpoint gửi tin.
+6. Chỉ nối UI sau khi các kiểm thử backend đạt và hợp đồng tạo yêu cầu được xác định; kiểm tra UI không báo đã lưu khi DB lỗi.
+
+### Trạng thái thực hiện
+
+- [x] Chốt sự kiện, dữ liệu, người nhận và project đích.
+- [x] Kiểm tra baseline repository: 15/15 tests hiện có đạt trong phiên này.
+- [x] Chuẩn bị transport `supabase/functions/_shared/telegram.mjs` và `tests/telegram.test.mjs`: 8/8 ca HTTP giả lập đạt; toàn bộ 23/23 tests, syntax check và build đạt. Đây chưa phải Edge Function hoàn chỉnh, chưa phải kiểm thử DB/trigger hoặc gửi Telegram thật.
+- [x] Lấy lại quyền project đích và đọc schema thành công trong phiên triển khai ngày 2026-10-30.
+- [x] Kiểm tra schema/quyền/luồng ghi thực tế; đã áp dụng migration `purchase_requests_telegram_backend`, thêm hai bảng backend-only, giữ nguyên ba bảng cũ.
+- [x] Runtime đã đọc cấu hình và gọi được Telegram; Telegram trả `telegram_chat_not_found`, cần kiểm tra cuộc trò chuyện Admin lớn/Start và giá trị cấu hình chat đích. Không đọc hoặc ghi giá trị secret vào tài liệu.
+- [x] Deploy `telegram-notify`, kiểm thử riêng thành công, bật trigger sau commit và xác nhận Telegram trả message ID; xem mục 17.2. Chưa xác nhận bằng phản hồi người nhận.
+- [ ] Nối UI và kiểm chứng đầu-cuối sau khi backend đạt.
+
+**Chưa hoàn tất triển khai thực tế:** không coi việc cập nhật tài liệu hoặc test HTTP giả lập là đã deploy/gửi Telegram thành công. Quyền truy cập đúng project là điều kiện còn thiếu để thực hiện thao tác từ xa.
+
+
+**Bàn giao kỹ thuật trong phiên 2026-10-30:** transport nhận bản ghi theo hợp đồng tối thiểu (`id`, `product_id`, `product_name`, `created_at`, `contact_name`, `phone`, cờ `is_test` cho dữ liệu thử). Đây là đầu vào nội bộ của module, không khẳng định schema project đang có các cột này. Caller phải đọc bản ghi đã commit và chiếm quyền gửi trước khi gọi transport; lớp xác thực, đọc DB, chống trùng, lưu trạng thái và trigger chờ đối chiếu project thật. Transport không retry kết quả mơ hồ, không trả nội dung lỗi có thể chứa token, không lấy nơi nhận từ bản ghi. Phần backend không nằm trong 11 file output website. Kiểm tra lại kết nối cuối phiên vẫn chỉ thấy project khác; chưa thực hiện migration/deploy hoặc kiểm thử tin thật.
+
+
+### 17.1. Kết quả triển khai ban đầu — 2026-10-30
+
+**Mốc lịch sử:** lỗi chat đích và trạng thái trigger chưa bật ở mục này đã được xử lý tại mục 17.2. Trạng thái hiện hành xem mục 17.2.
+
+**Phần này thay thế các ghi chú “chưa có quyền/chưa deploy” ở mốc bàn giao trước.** Đã kết nối đúng `cloudfit-internal`, trạng thái healthy, đọc được ba bảng cũ và không có Edge Function trước triển khai.
+
+- Migration từ xa `purchase_requests_telegram_backend` đã áp dụng: `public.purchase_requests`, `public.telegram_deliveries`, schema hàm nội bộ `telegram_private`, extension `pg_net`. Source đối chiếu: `supabase/telegram-schema.sql`. Cả hai bảng mới bật RLS và thu hồi quyền anon/authenticated; chỉ backend được ghi yêu cầu và trạng thái gửi.
+- Edge Function `telegram-notify` đã ACTIVE, version 2. Tắt gateway JWT vì function tự xác thực bằng token ngẫu nhiên dùng một lần cho từng bản ghi; DB chỉ lưu hash. Token được tạo trong DB, không lấy từ frontend; claim trạng thái pending bằng cập nhật nguyên tử trước khi gửi. Không có thêm secret do người dùng phải nhập ngoài hai tên đã duyệt.
+- Đã gọi function riêng bằng bản ghi thử `a1eca41d-5af9-4725-8b79-f97f96792a08`, nhãn DỮ LIỆU THỬ, số điện thoại giả. DB lưu và đọc lại được; Telegram trả lỗi 400 được chuẩn hóa thành `telegram_chat_not_found`. Bản ghi yêu cầu vẫn còn nguyên, trạng thái gửi là failed, chưa có message ID. Đây là kiểm chứng thực tế nhánh Telegram lỗi, **không phải gửi thành công**.
+- Endpoint thiếu token trả HTTP 401. Kiểm tra quyền SQL: anon/authenticated không có quyền đọc/ghi yêu cầu, đọc/sửa trạng thái hoặc gọi hàm dispatch nội bộ. Không thêm quyền Admin hoặc tài khoản mới.
+- Kiểm thử HTTP giả lập cho transport và handler: 15 ca đạt, bao gồm gọi đồng thời/replay, Telegram lỗi, timeout, lỗi DB và lỗi ghi trạng thái sau gửi. Toàn bộ dự án 30 tests đạt; syntax check và build đạt. Kiểm thử đồng thời/replay hiện là giả lập, chưa phải kiểm chứng API thật có gửi thành công.
+- Security Advisor có hai thông tin `RLS Enabled No Policy` cho hai bảng backend-only mới; chủ ý không cấp policy cho client, không mở quyền chỉ để xóa thông tin này. Không có mục mức WARNING/ERROR trong kết quả kiểm tra. Hướng dẫn: https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy
+- Source trigger đã chuẩn bị ở `supabase/telegram-trigger.sql` nhưng **chưa áp dụng**: giữ đúng thứ tự test function thành công trước bật trigger. Chưa nối UI hoặc đổi nút chọn gói. Hiện tạo bản ghi mới chưa tự phát Telegram.
+
+**Việc người dùng cần thực hiện:** mở bot bằng tài khoản Admin lớn và bấm Start; kiểm tra `TELEGRAM_CHAT_ID` trỏ tới đúng cuộc trò chuyện riêng của Admin lớn trong Supabase Secrets. Không gửi giá trị qua chat. Sau khi sửa, gửi lại thủ công cùng mã yêu cầu thử (chỉ trạng thái failed mới được dispatch lại); khi Telegram xác nhận thành công mới bật trigger và kiểm chứng INSERT/rollback/gọi lặp thật.
+
+**Vận hành:** gọi `telegram_private.dispatch(request_id)` từ backend/quản trị tin cậy để thử lại lỗi xác định. Hàm không gửi lại pending/processing/sent/unknown; các trạng thái không rõ phải đối chiếu trước khi can thiệp. `pg_net` chỉ xử lý HTTP sau commit. Nếu queue HTTP mất hoặc timeout trước khi function claim, bản ghi có thể còn pending; chưa có retry định kỳ, cần đối chiếu HTTP trước khi phục hồi. Không xóa bản ghi yêu cầu để xử lý lỗi Telegram.
+
+**Hoàn tác an toàn:** giữ trigger chưa bật; nếu đã bật ở bước sau, gỡ riêng trigger để dừng phát tin mới, giữ toàn bộ bản ghi và lịch sử gửi. Không chạy lại schema hoặc drop bảng để hoàn tác.
+
+
+### 17.2. Kiểm thử lại thành công và bật trigger — 2026-10-30
+
+**Trạng thái hiện hành:** kết nối project đúng; function `telegram-notify` ACTIVE version 2; trigger `purchase_requests_telegram_insert` đã bật. Phần này thay thế mốc chờ sửa chat đích/chưa bật trigger ở mục 17.1 và các ghi chú trước đó. Không yêu cầu nhập lại secret; giá trị không xuất hiện trong báo cáo.
+
+| Kiểm chứng thực tế | Bằng chứng |
+|---|---|
+| Gửi lại riêng function trên yêu cầu đã lưu | Yêu cầu `a1eca41d-5af9-4725-8b79-f97f96792a08`: `sent`, Telegram message ID `4`, HTTP 200; bản ghi yêu cầu còn nguyên |
+| Bật trigger | Migration `enable_purchase_requests_telegram_trigger` thành công; trigger INSERT có trạng thái enabled |
+| Tạo yêu cầu mới, không gọi dispatch thủ công | Yêu cầu `be7d8ec2-992b-47b0-a816-bab5aadf8b63`: tự chuyển `sent`, Telegram message ID `5`, HTTP 200 |
+| Rollback sau INSERT | Bản ghi thử `916c67e1-b9a1-4fb1-b0aa-8b220184e94a` và trạng thái gửi đều không tồn tại; hàng đợi HTTP tương ứng không còn (đều 0) |
+| Gọi dispatch lại cho bản ghi đã gửi | `message_id` và `http_request_id` giữ nguyên `5`; không tạo lệnh gửi mới |
+| UPDATE bản ghi đã gửi | Không kích hoạt thông báo; trạng thái và message ID giữ nguyên |
+
+Dữ liệu giữ lại: hai yêu cầu hoàn toàn giả lập, có `is_test = true`; tin gửi có nhãn DỮ LIỆU THỬ. Không xóa lịch sử để che kết quả kiểm thử.
+
+**Giới hạn:** Telegram API đã xác nhận gửi; chưa có phản hồi của Admin lớn xác nhận đã đọc tin trong cuộc trò chuyện. Kiểm thử đồng thời của handler vẫn là HTTP giả lập. Chưa nối UI hoặc tạo form đăng ký mua, chưa phát hành lại website. Bản ghi được tạo bởi backend/quản trị đủ quyền mới kích hoạt được luồng này; frontend anon/authenticated vẫn không được ghi trực tiếp hoặc đọc danh sách yêu cầu.
+
+**Vận hành sau bật:** INSERT yêu cầu thành công → `pg_net` xử lý sau commit → function xác thực token và claim bản ghi → Telegram → lưu trạng thái gửi. Lỗi Telegram không làm mất yêu cầu đã lưu; lỗi xác định được thử lại thủ công, pending/processing/unknown cần đối chiếu và không tự retry. Nếu cần dừng phát tin, gỡ riêng trigger, giữ bảng và lịch sử. Chỉ nối UI sau khi chốt hợp đồng thu thập/lưu và quyền truy cập.
+
+
+## 18. Gemini tóm tắt thông báo — Phương án C đã duyệt 2026-10-30
+
+**Phạm vi đã duyệt:** Gemini tạo một câu tóm tắt trước khi Telegram gửi thông báo đăng ký mua mới. Không thêm chatbot, báo giá, tư vấn hoặc giao diện mới. Project giữ `cloudfit-internal`; trigger INSERT và cơ chế xác thực/chống trùng giữ nguyên. Chưa nối UI đăng ký mua.
+
+### Trigger và backend
+
+DB commit yêu cầu → trigger → `telegram-notify` xác thực token/claim → đọc bản ghi đã lưu → Gemini tóm tắt → Telegram gửi đúng một thông báo → ghi trạng thái gửi. Không gọi Gemini trước xác thực hoặc khi không claim được. Function đang ACTIVE version 8; nguồn mới: `supabase/functions/_shared/gemini.mjs`.
+
+### Dữ liệu gửi và nội dung
+
+- Gemini chỉ nhận **tên gói** trong object JSON. Chưa thu thập nội dung nhu cầu nên không bổ sung trường này hoặc gửi dữ liệu tự do. Không gửi tên người liên hệ, số điện thoại, mã yêu cầu, thời điểm tạo, Telegram token/chat ID hoặc token xác thực nội bộ sang Gemini.
+- Model hiện dùng `gemini-3.5-flash-lite`; REST generateContent, không cài SDK/dependency. Trả JSON một câu ngắn; đầu ra tối đa 360 ký tự, phải có đúng tên gói và không chứa URL, số điện thoại hoặc các khẳng định thanh toán/kích hoạt/giá/cam kết bị cấm. Nội dung không hợp lệ được bỏ qua.
+- Telegram vẫn chứa các trường gốc đã duyệt. Nếu Gemini thành công, thêm dòng **“Tóm tắt AI (tham khảo): …”**; trường gốc là căn cứ xử lý. Không xem nội dung AI là xác nhận mua/thanh toán hoặc kích hoạt dịch vụ.
+
+### Quản lý secret
+
+`GEMINI_API_KEY` chỉ được đọc ở Supabase Edge Function runtime và gửi Google bằng header `x-goog-api-key`, không đặt trên URL. Người dùng xác nhận đã cấu hình. Tài liệu/log/frontend/repository không chứa giá trị key. Giữ hai cấu hình Telegram bằng tên `TELEGRAM_BOT_TOKEN` và `TELEGRAM_CHAT_ID`.
+
+### Ứng xử khi lỗi
+
+- Gemini được chờ tối đa **6 giây**, một lần gọi, không retry tự động. Thiếu key, lỗi HTTP/quota, output lỗi/bị chặn hoặc timeout → gửi ngay mẫu Telegram hiện tại, không làm hỏng yêu cầu đã lưu và không bỏ thông báo.
+- Kết quả function bổ sung `summary_status` (`generated`/`fallback`) và `summary_code` an toàn; không trả raw provider error, prompt hoặc nội dung khách hàng. Hai trường này nằm ở kết quả HTTP, chưa lưu thành cột lịch sử dài hạn; hàng đợi/phản hồi pg_net có thời hạn lưu của nền tảng.
+- Trạng thái gửi Telegram vẫn độc lập với chất lượng tóm tắt: `sent` có thể đi kèm `fallback`. Nếu Telegram lỗi, áp dụng nguyên tắc giữ bản ghi và gửi lại thủ công đã chốt. Không gửi thêm một tin riêng khi Gemini trả chậm.
+
+### Cách kiểm thử và bằng chứng
+
+- Test function riêng bằng HTTP giả lập trước deploy: whitelist dữ liệu ra Gemini; không key không gọi; HTTP lỗi/quota, JSON sai, safety block, thông tin ngoài phạm vi và timeout đều fallback; handler gửi đúng một Telegram với AI hoặc mẫu cũ.
+- Toàn bộ **35/35 tests đạt**, syntax check và build đạt. Test mock không thay thế kết quả thực tế.
+- Ca thực tế 1: yêu cầu `a701d977-e14f-40b1-bf3d-0bbc09365c22` gửi Telegram thành công message ID `6`, summary fallback.
+- Ca thực tế 2: yêu cầu `255a34a5-d583-4197-974d-18f0026fff6b` có Gemini timeout nhưng Telegram vẫn `sent`, message ID `7`.
+- Ca thực tế cuối với model hiện hành: yêu cầu `eb8ea806-75bf-4731-877d-a095dd1cc3d1` → `summary_status = generated`, `summary_code = null`, Telegram `sent`, message ID `8`.
+- Các ca dùng dữ liệu giả và có nhãn DỮ LIỆU THỬ. Telegram API đã xác nhận gửi; chưa có xác nhận người nhận đã đọc nội dung. Không thay đổi schema/RLS/Auth trong lần tích hợp Gemini.
+
+**Tiêu chuẩn đạt quan sát được:** bản ghi yêu cầu tồn tại; function báo generated và Telegram có dòng tóm tắt AI với ca thành công; Gemini lỗi/timeout vẫn có thông báo mẫu và trạng thái sent; gọi lặp không vượt cơ chế claim hiện tại. Nội dung AI cần được người nhận đối chiếu, không cam kết mô hình không bao giờ suy diễn.
+
+**Vận hành/hoàn tác:** nếu cần dừng Gemini, bỏ secret Gemini để hệ thống dùng mẫu cũ hoặc deploy lại handler trước tích hợp; giữ trigger, DB và toàn bộ lịch sử Telegram. Theo dõi quota/chi phí trong tài khoản Google; chưa cấu hình ngân sách hoặc tự mua thêm quota.
+
+Nguồn kỹ thuật: https://ai.google.dev/api/generate-content và https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite
+
+
+## 19. Nối website và phát hành — 2026-10-30
+
+**[ĐÃ DUYỆT]:** chủ dự án yêu cầu cập nhật toàn bộ luồng tích hợp lên website và chọn chính xác `cloudfitk.vercel.app`. Mục này thay trạng thái “chưa nối UI” ở các mốc trước. Không triển khai thanh toán, tài khoản khách, CRM hoặc mở danh sách yêu cầu công khai.
+
+### Hành trình hiện hành
+
+Danh mục → Chi tiết gói → **Đăng ký gói này** → nhập họ tên/số điện thoại → đồng ý dùng thông tin để xử lý đăng ký và thông báo người phụ trách qua Telegram → **Gửi đăng ký**. Website chỉ hiện **“Đã tiếp nhận đăng ký”** và mã yêu cầu sau khi backend trả xác nhận DB đã lưu. Gửi đăng ký không xác nhận thanh toán/kích hoạt hoặc giá cuối cùng.
+
+- `catalog/purchase.mjs`: form có nhãn, autocomplete, bàn phím/focus, trạng thái đang gửi/lỗi/thành công; giữ input khi lỗi và khóa thao tác lặp khi đang gửi/đã thành công. Không hiển thị chi tiết Gemini/backend cho khách.
+- Trình duyệt tạo UUID và giữ **mã yêu cầu** trong sessionStorage để thử lại; không lưu tên/số điện thoại vào storage. Nếu storage bị chặn vẫn dùng mã trong bộ nhớ. Nếu mã cũ đã lưu với nội dung khác, thông báo rõ trước khi người dùng gửi thành yêu cầu mới.
+- `purchase-request` là Edge Function public tiếp nhận form, không phải endpoint gửi Telegram. Không cần khách đăng nhập Admin. Chấp nhận origin production đã chọn và localhost phục vụ kiểm thử; có validation, honeypot và giới hạn ba yêu cầu mới/số điện thoại/giờ. Origin/CORS không phải cơ chế xác thực người dùng hay chống spam toàn diện.
+- RPC `submit_purchase_request` chỉ service_role gọi được: kiểm tra gói công khai tồn tại, lấy tên gói từ catalog thay vì tin giá trị client, chuẩn hóa điện thoại, dùng cùng ID để không tạo trùng và kiểm tra giới hạn trong transaction có khóa. Nguồn: `supabase/purchase-intake.sql`, migration đã áp dụng `purchase_request_public_intake`.
+- Không cấp INSERT/SELECT bảng cho anon/authenticated; endpoint chỉ trả saved và mã yêu cầu, không trả dữ liệu khách. Backend/Gemini/Telegram secrets vẫn chỉ ở Supabase. Trường API `test_mode` chỉ gắn nhãn tin thử, không đổi quyền truy cập hoặc bỏ qua validation/giới hạn; form thường không gửi trường này.
+- DB thành công mới kích hoạt trigger sau commit; Gemini/Telegram lỗi không làm mất yêu cầu. Khách không phải chờ Telegram gửi xong để nhận kết quả đã lưu; không khẳng định đã thông báo Admin khi chỉ có xác nhận lưu.
+
+### Kiểm chứng và phát hành
+
+- **40/40 unit/integration HTTP giả lập đạt**, syntax check và static build đạt. Output website có đúng 12 runtime files; SQL, tests, tài liệu và code backend/secret không nằm trong output.
+- API thật: gửi hai lần cùng mã `54fab58b-6f8a-4e68-ad08-4226c2fade75` đều trả 201 với cùng ID; DB chỉ có một yêu cầu và một delivery, Telegram message ID 9. Gemini fallback vẫn gửi được mẫu Telegram.
+- Transaction SQL thật: gọi cùng ID không tăng số bản ghi; tạo ba yêu cầu cùng điện thoại, yêu cầu thứ tư trả rate_limited; rollback toàn bộ giữ lại 0 dòng thử, không phát tin từ transaction này.
+- Security Advisor chỉ có hai mục INFO backend-only RLS không policy đã giải thích ở mục 17.1; không WARNING/ERROR trong lần kiểm tra.
+- Đã thử Playwright kiểm giao diện mobile, nhưng Chrome không mở được do `spawn EPERM`. Kịch bản ở `tests/purchase-browser.mjs`; **không ghi nhận browser/mobile E2E là đạt**. Kiểm chứng thật hoàn tất ở mức HTTP/API/DB/Telegram, chưa xác minh ảnh hoặc tương tác DOM bằng trình duyệt tự động.
+- Vercel production deployment **`dpl_GHn83S3EayLGaTcevc6h2frk55YF`**, project `cloudfitk` (`prj_4VsUFRKEeUhqSKaxidhXsoT7I3sr`), team `team_GkCE0V1NDSD2YMKIrhDwai95`, trạng thái READY; alias chính **https://cloudfitk.vercel.app**. Deploy bằng 12 file output đã build, không Git commit mới; không tự đổi repository hoặc domain khác.
+- Kiểm tra production: `/`, `/catalog/app.mjs`, `/catalog/purchase.mjs`, `/catalog/catalog.css` đều HTTP 200 và byte-for-byte khớp build. CORS preflight từ origin production trả 204 đúng origin; POST ca giả lập `d4c236d8-2851-410b-9b79-e7052267ac20` trả 201 saved; DB xác nhận bản ghi còn nguyên, delivery sent, Gemini generated và Telegram message ID **10**.
+
+**Giới hạn vận hành:** giới hạn theo số điện thoại không thay CAPTCHA hoặc xác thực số điện thoại; chưa bổ sung quản trị danh sách yêu cầu, chính sách tự xóa dữ liệu, email gửi khách hoặc thanh toán. Không log dữ liệu liên hệ/secret. Cần đối chiếu nội dung/giá gói mẫu trước dùng để báo giá thực tế. Hoàn tác UI bằng deployment production trước `dpl_FVMoT1oc6AtUKJ8D6BAhe1VRx3fh`; giữ DB và lịch sử gửi, không drop bảng. Có thể dừng tiếp nhận bằng dừng endpoint riêng mà không ảnh hưởng danh mục hoặc thông báo đã lưu.
+
+
+## 20. Tích hợp giao diện đã chốt, bảo toàn luồng mua — 2026-10-30
+
+**[ĐÃ DUYỆT]:** dùng production hiện tại làm mốc, giữ nguyên `catalog/purchase.mjs` và API `purchase-request`. Chủ dự án xác nhận nguồn giao diện **Mekong Cloud Horizon tại `Docs/DESIGN.md`**, font Be Vietnam Pro, màu xanh dương, thẻ bo 24px. Các nội dung minh họa trong design như tính giá, wizard, credits/ROI không tự trở thành chức năng hoặc tuyên bố sản phẩm đã duyệt.
+
+**Mốc thực tế:** production `dpl_GHn83S3EayLGaTcevc6h2frk55YF` được đối chiếu trực tiếp với workspace trước sửa; HTML/app/CSS/purchase khớp byte. Manifest hash bảo vệ lưu ở `Docs/ui-production-baseline.json`.
+
+**Phần thay đổi:** chỉ `catalog/app.mjs` và `catalog/catalog.css` trong runtime: thẻ gói có phân cấp tên/mô tả/giá mẫu/nhãn/CTA; trang chi tiết có bố cục thông tin và khung đăng ký; desktop hai vùng, tablet/mobile xếp dọc; form giữ module cũ nhưng được đồng bộ qua CSS có scope. Sửa độ ưu tiên CSS checkbox để không bị quy tắc width:100% chung ghi đè. Input/nút 48px, focus rõ và giảm chuyển động khi được yêu cầu. Nội dung và trạng thái tiếp nhận từ `purchase.mjs` giữ nguyên.
+
+**Bảo toàn:** hash `purchase.mjs` giữ nguyên `a68afc0eed8f83f8b19816257fada51583b2a14c61b70c40e9036c0af44516d2`; nguồn API index/handler/config/RPC cũng khớp baseline. Không gọi migration, không deploy lại Edge Function, không đổi secret/Auth/RLS/trigger và không gửi thêm yêu cầu thử trong đợt UI này.
+
+**Kiểm chứng:** 40 tests đạt, syntax check và build đạt. Sau phát hành, HTTP 200 và byte nội dung app/CSS/purchase trên domain chính khớp build; purchase hash vẫn nguyên. Không khẳng định pixel-perfect hoặc mobile browser E2E đã đạt: Chrome vẫn là giới hạn môi trường `spawn EPERM` được ghi trước đó, chưa có ảnh QA mới. Các kiểm thử HTTP giả lập không thay thế kiểm thử tương tác thực tế.
+
+**Phát hành:** production deployment `dpl_XWtBRZ3V5RiWD4QHYPQh2h6uY8XM` READY, alias https://cloudfitk.vercel.app. Chỉ hai runtime file thay đổi, vẫn 12 file website; không có API secret/backend source trong output. Có thể quay lại mốc `dpl_GHn83S3EayLGaTcevc6h2frk55YF` nếu cần hoàn tác giao diện mà không ảnh hưởng DB/Telegram/Gemini.
+
+
+## 21. Phát hành trang chính hợp nhất — 2026-10-31
+
+Chủ dự án duyệt preview local và yêu cầu cập nhật Vercel. Đã phát hành production `dpl_2YqtPCBaNPvEHbK9g8PjnMufKK3e` READY tại https://cloudfitk.vercel.app. Nội dung thiết kế gốc hiển thị sẵn, bỏ khung đóng/mở; một danh sách gói duy nhất lấy từ nguồn Supabase hiện có, tìm/lọc chung state; các chức năng chưa triển khai được ghi rõ Sắp có. Giữ cảnh báo nội dung/giá/số liệu mẫu chưa xác minh.
+
+Purchase module, API, cấu hình/data khớp hash baseline; không đổi DB/secret/quyền hoặc deploy backend. 42 tests/check/build đạt; 13 runtime files. Kiểm tra live HTML/app/CSS/design-ui/purchase HTTP 200 khớp build; không còn details/tiêu đề bản mẫu. Browser tự động vẫn bị giới hạn như các mốc trước; chủ dự án đã xem và duyệt preview. Source, phạm vi, kiểm tra và rollback ghi tại `unified-layout-preview.md`; baseline để hoàn tác `dpl_XWtBRZ3V5RiWD4QHYPQh2h6uY8XM`.

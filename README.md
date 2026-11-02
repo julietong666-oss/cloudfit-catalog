@@ -1,3 +1,21 @@
+# UI production — 2026-10-30
+
+Đã tích hợp Mekong Cloud Horizon từ `Docs/DESIGN.md` lên https://cloudfitk.vercel.app, deployment `dpl_XWtBRZ3V5RiWD4QHYPQh2h6uY8XM` READY. Mốc trước sửa: `dpl_GHn83S3EayLGaTcevc6h2frk55YF`, được đối chiếu byte trực tiếp với production.
+
+Chỉ sửa `catalog/app.mjs` và `catalog/catalog.css`: thẻ gói, bố cục chi tiết/đăng ký và style form. `purchase.mjs` cùng API/RPC được bảo toàn hash; không deploy backend, không đổi DB/secret và không gửi tin thử mới. 40 tests/check/build đạt; assets live khớp build. Browser/visual QA chưa đạt do Chrome bị spawn EPERM; chưa có ảnh QA mới. Chi tiết ở plan mục 20 và `Docs/ui-production-baseline.json`.
+
+# Cập nhật website — 2026-10-30
+
+Website production: https://cloudfitk.vercel.app — deployment `dpl_GHn83S3EayLGaTcevc6h2frk55YF` READY.
+
+Chi tiết gói có nút **Đăng ký gói này**, mở form họ tên/số điện thoại và đồng ý liên hệ. Supabase `purchase-request` xác nhận lưu rồi UI mới báo đã tiếp nhận. Trigger sau commit tiếp tục Gemini → Telegram; Gemini lỗi dùng mẫu cũ, không mất yêu cầu. Không có thanh toán.
+
+API không mở quyền đọc/ghi bảng cho client; RPC service-only xử lý gói hợp lệ, chống trùng UUID và giới hạn ba yêu cầu/số điện thoại/giờ. Client không chứa backend secrets. Cập nhật build gồm 12 runtime files.
+
+Kiểm chứng: 40 tests, check, build đạt; API thật gửi lặp cùng ID chỉ có một bản ghi và một delivery; transaction kiểm giới hạn đã rollback. Production assets HTTP 200 khớp build, CORS 204 và POST thử 201; ca production có Gemini generated và Telegram message ID 10. Browser test Chrome bị spawn EPERM, chưa ghi nhận mobile/desktop E2E đạt. Xem `tests/purchase-browser.mjs`; chạy bằng Playwright sẵn có qua PLAYWRIGHT_MODULE và CHROME_PATH nếu cần.
+
+Các phần dưới đây là lịch sử triển khai. Trạng thái hiện hành xem Development Plan mục 19; ghi chú cũ “chưa deploy/chưa nối UI” đã được mốc này thay thế.
+
 # CloudFit — tìm kiếm và lọc (FR-02/03)
 
 ## Nhịp 1 — Danh tính (2026-10-26)
