@@ -135,3 +135,10 @@ button:disabled,.cf-soon-link{cursor:not-allowed!important;opacity:.65;transform
 #catalog .cf-purchase .cf-consultation-later{background:transparent;color:var(--cf-primary);border:1px solid var(--cf-outline)}
 #catalog .cf-purchase .cf-consultation-later:hover{background:var(--cf-soft)}
 #catalog .cf-consultation-note{font-size:12px;line-height:20px;color:var(--cf-muted)}
+
+.cf-contact-call{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:40;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;max-width:calc(100vw - 32px);padding:12px 20px;border-radius:9999px;background:#005bbf;color:#fff;text-decoration:none;font-size:14px;font-weight:600;line-height:22px;box-shadow:0 4px 16px #001a4126}
+.cf-contact-call:hover{background:#004493}
+.cf-contact-call:focus-visible{outline:3px solid #005bbf;outline-offset:4px}
+.cf-contact-call .material-symbols-outlined{font-size:22px}
+.cf-hotline-link{color:inherit;text-decoration:none}
+.cf-hotline-link:hover{text-decoration:underline}
