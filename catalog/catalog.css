@@ -127,3 +127,11 @@ button:disabled,.cf-soon-link{cursor:not-allowed!important;opacity:.65;transform
 .budget-card[aria-pressed=true]{outline:2px solid #006e2c;outline-offset:2px;background:#86f89833!important}
 .budget-card[aria-pressed=false]{background:#f4f3f7!important;outline:none}
 @media(max-width:767px){#catalog{padding:0}.cf-main-notice{margin-inline:16px;padding:16px}#catalog .cf-card.solution-card{padding:20px}.cf-solution-icon{font-size:24px;padding:10px}main .px-margin{padding-left:16px;padding-right:16px}}
+
+#catalog .cf-consultation-confirmation{display:grid;gap:16px;min-width:0}
+#catalog .cf-consultation-confirmation h3,#catalog .cf-consultation-confirmation p{margin:0;overflow-wrap:anywhere}
+#catalog .cf-consultation-state{justify-self:start;padding:6px 14px;border-radius:9999px;background:var(--cf-soft);color:var(--cf-primary);font-weight:600}
+#catalog .cf-consultation-actions{display:grid;gap:12px;margin-top:8px}
+#catalog .cf-purchase .cf-consultation-later{background:transparent;color:var(--cf-primary);border:1px solid var(--cf-outline)}
+#catalog .cf-purchase .cf-consultation-later:hover{background:var(--cf-soft)}
+#catalog .cf-consultation-note{font-size:12px;line-height:20px;color:var(--cf-muted)}

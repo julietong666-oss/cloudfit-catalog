@@ -128,7 +128,7 @@ function renderRoute(focus = false) {
       purchase.hidden = false;
       introduction.hidden = true;
       choose.hidden = true;
-      purchase.querySelector('input').focus();
+      purchase.querySelector('[data-confirmation-title],input')?.focus();
     });
     choose.className = 'cf-primary';
     registration.append(introduction, choose, purchase);

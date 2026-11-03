@@ -7,6 +7,7 @@ const opener = document.querySelector('#consult-open');
 const dialog = document.querySelector('#consult-dialog');
 const conversations = new Map();
 let activeId = demoCustomers[0].id;
+let returnFocus=opener;
 let renderedId;
 let renderedMessages = 0;
 const demoQrUrl = new URL('./demo-payment-qr.svg', import.meta.url).href;
@@ -27,7 +28,7 @@ const context = find('consult-summary');
 const sampleNotice = find('consult-notice').textContent;
 const sampleBadge = dialog.querySelector('.cf-chat-badge').textContent;
 function customerFor(conversation) {
- if(conversation.source==='consultation')return {company:conversation.contact.contactName,admin:'Chờ phân công',initials:'CF',specialty:'CloudFit · thu thập nhu cầu'};
+ if(conversation.source==='consultation')return {company:conversation.contact.contactName||'Khách đăng ký tư vấn',admin:conversation.sampleStaff?'Ngọc Anh · mô phỏng':'Chờ phân công',initials:conversation.sampleStaff?'NA':'CF',specialty:conversation.sampleStaff?'Nhân viên mẫu · không phân công thật':'CloudFit · thu thập nhu cầu'};
  return demoCustomers.find(item=>item.id===conversation.customerId);
 }
 function element(tag, text, className) {
@@ -72,7 +73,7 @@ function renderSummary() {
     ...(conversation.contact ? [['Mã yêu cầu',conversation.contact.requestId],['Họ tên',conversation.contact.contactName],['Số điện thoại',conversation.contact.phone]] : []),
     ['Gói quan tâm', conversation.interest || 'Chưa chọn gói · cần tư vấn'],
     ...questions.map(q => [q.label, conversation.answers[q.key] || 'Chưa chia sẻ']),
-  ]) context.append(element('dt', label), element('dd', value));
+  ]) {if(value)context.append(element('dt', label), element('dd', value));}
 }
 function render() {
   const conversation = current();
@@ -82,8 +83,10 @@ function render() {
   renderedId = activeId;
   const admin = customerFor(conversation).admin;
   const fromForm = conversation.source === 'consultation';
+  demoAccept.hidden=!fromForm;demoAccept.disabled=Boolean(conversation.sampleStaff);
+  demoAccept.textContent=conversation.sampleStaff?'Đã tiếp nhận · mô phỏng':'Mô phỏng nhân viên tiếp nhận';
   find('consult-notice').textContent = fromForm ? 'Yêu cầu tư vấn đã lưu. Phần hỏi đáp bên dưới hiện là khảo sát trên trình duyệt, chưa kết nối nhân viên trực tuyến; tải lại trang sẽ mất câu trả lời bổ sung.' : sampleNotice;
-  dialog.querySelector('.cf-chat-badge').textContent = fromForm ? 'Chờ phân công' : sampleBadge;
+  dialog.querySelector('.cf-chat-badge').textContent = fromForm ? (conversation.sampleStaff?'Đã tiếp nhận · mô phỏng':'Chờ phân công') : sampleBadge;
   dialog.querySelector('.cf-chat-directory').hidden = fromForm;
   find('consult-complete').querySelector('p').textContent = fromForm ? 'Đã điền khảo sát trong trang này' : 'Đã hoàn tất khảo sát mẫu';
   for (const message of conversation.messages.slice(renderedMessages)) {
@@ -139,6 +142,7 @@ find('consult-restart').addEventListener('click', () => {
   input.value = ''; feedback.textContent = ''; render(); input.focus();
 });
 opener.addEventListener('click', () => {
+  returnFocus=opener;
   // Capture an actually viewed package as context, never submit a purchase.
   const interest = location.hash.startsWith('#product/')
     ? document.querySelector('#catalog-detail .cf-detail-heading')?.textContent || '' : '';
@@ -148,7 +152,7 @@ opener.addEventListener('click', () => {
   find('consult-close').focus();
 });
 find('consult-close').addEventListener('click', () => dialog.close());
-dialog.addEventListener('close', () => opener.focus());
+dialog.addEventListener('close', () => (returnFocus?.isConnected?returnFocus:opener).focus());
 
 function orderAction(label, handler, secondary = false) {
  const button = element('button', label, secondary ? 'cf-order-secondary' : 'cf-chat-send');
@@ -266,7 +270,16 @@ find('bank-qr-reset').addEventListener('click', () => {
  offerFeedback.textContent = 'Đã dùng lại QR giả lập CloudFit. Không chuyển tiền thật.';
 });
 
-// This event is emitted only after purchase-request returns saved:true for the same ID.
+const demoAccept=element('button','Mô phỏng nhân viên tiếp nhận','cf-chat-restart');
+demoAccept.type='button';demoAccept.hidden=true;
+dialog.querySelector('.cf-chat-sidebar').append(demoAccept);
+demoAccept.addEventListener('click',()=>{
+ const conversation=current();if(conversation?.source!=='consultation'||conversation.sampleStaff)return;
+ conversation.sampleStaff=true;
+ conversation.messages.push({role:'admin',text:`Mô phỏng: Ngọc Anh đã tiếp nhận yêu cầu ${conversation.contact.requestId} về gói ${conversation.interest}. Đây là minh họa trên trình duyệt, chưa gửi đến nhân viên thật.`});
+ render();
+});
+// Explicit customer choice after a backend-confirmed receipt; never submits again.
 document.addEventListener('cloudfit:consultation-saved', event => {
  try {
   const conversation=createConsultationConversation(event.detail,questions[0].text);
@@ -274,6 +287,8 @@ document.addEventListener('cloudfit:consultation-saved', event => {
   if(!current())conversations.set(activeId,conversation);
   input.value='';feedback.textContent='';offerFeedback.textContent='';offerForm.hidden=true;
   find('offer-toggle').setAttribute('aria-expanded','false');
+  returnFocus=event.target.querySelector?.('[data-consultation-chat]')||opener;
   render();if(!dialog.open)dialog.showModal();dialog.scrollTop=0;find('consult-close').focus();
+  event.preventDefault();
  } catch { /* An invalid frontend event never creates a request or exposes another customer's data. */ }
 });

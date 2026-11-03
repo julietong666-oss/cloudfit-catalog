@@ -43,3 +43,16 @@ test('current intake requires a real package ID before accessing DB (general con
   assert.deepEqual(await response.json(),{error:'invalid_request'});
  }
 });
+
+import {consultationReceipt,readConsultationReceipt} from '../catalog/purchase.mjs';
+test('saved receipt retains only request/package metadata and rejects corrupt or cross-package sessions',()=>{
+ const context={requestId:id,productId:'sample',productName:'Gói mẫu',contactName:'Tên riêng',phone:'0000000000',answers:{private:'không lưu'}};
+ const receipt=consultationReceipt(context);
+ assert.deepEqual(Object.keys(receipt).sort(),['productId','productName','requestId','state','version']);
+ assert.equal(receipt.state,'saved');
+ const product={id:'sample',name:'Gói mẫu'};
+ assert.deepEqual(readConsultationReceipt(JSON.stringify(receipt),product),receipt);
+ assert.equal(readConsultationReceipt(id,product).state,'pending');
+ for(const raw of ['broken',JSON.stringify({...receipt,state:'invalid'}),JSON.stringify({...receipt,requestId:'bad'}),JSON.stringify({...receipt,productId:'other'})])assert.equal(readConsultationReceipt(raw,product),null);
+ assert.equal(consultationReceipt({...context,requestId:'bad'}),null);
+});

@@ -1,3 +1,7 @@
+# Xác nhận tư vấn và lựa chọn chat — 03/11/2026
+
+Form chỉ chuyển sang “CloudFit đã nhận yêu cầu tư vấn!” sau API xác nhận lưu. Khách chọn Chat ngay hoặc Để nhân viên liên hệ sau; tái sử dụng dialog hiện có, không tự gửi tin. Receipt theo gói trong sessionStorage giữ mã yêu cầu, gói và trạng thái, không lưu họ tên/điện thoại; quay lại/reload cùng phiên không tự gửi lại. Có tiếp nhận nhân viên mô phỏng ghi rõ nhãn, chưa có back office hay nhân viên nhận thật. Không đổi backend/DB/Telegram/SePay. 84 tests, check/build và browser mobile/desktop đạt. Chi tiết: `Docs/consultation-confirmation-2026-11-03.md`. Các mục dưới là lịch sử.
+
 # Đã deploy và kiểm chứng SePay Sandbox qua API — 03/11/2026
 
 Website https://cloudfitk.vercel.app, deployment `dpl_BnHbBDxwxKut78aPYt4ZtBpRqqj6` READY. Edge Functions: sepay-sandbox v12, sepay-sandbox-ipn v11. 20/20 assets live khớp build. Đã thử một hóa đơn giả lập 10.000 VND: SePay Sandbox chấp nhận checkout, nút Giả lập thanh toán tạo giao dịch thử, API xác nhận → DB paid → payment_verified=true → popup đúng nội dung; Telegram ghi sent/message 14, một delivery. Không có tiền thật, không đổi schema/RLS/Secrets.

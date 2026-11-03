@@ -62,3 +62,10 @@ test('saved consultation retains contact and package context without fictional s
  assert.match(conversation.messages.at(-1).text,/chưa có kết nối chat trực tuyến/);
  assert.throws(()=>createConsultationConversation({...contact,requestId:'bad'},questions[0].text));
 });
+
+test('restored receipt opens the same consultation context without persisting contact data or sending customer messages',()=>{
+ const conversation=createConsultationConversation({requestId:'20000000-0000-4000-8000-000000000001',productId:'sample',productName:'Gói mẫu'},questions[0].text);
+ assert.equal(conversation.interest,'Gói mẫu');assert.equal(conversation.contact.phone,'');
+ assert.equal(conversation.messages.filter(m=>m.role==='customer').length,0);
+ assert.match(conversation.messages[1].text,/chưa có nhân viên/i);
+});
