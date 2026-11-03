@@ -1,3 +1,4 @@
+import {issueConsultationReceipt} from '../_shared/consultation-receipt.mjs';
 const allowed = new Set(['https://cloudfitk.vercel.app','http://127.0.0.1:4173','http://localhost:4173']);
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export function createIntakeHandler({env,fetchImpl=fetch}) {
@@ -32,7 +33,8 @@ export function createIntakeHandler({env,fetchImpl=fetch}) {
     return result({error:'temporarily_unavailable'},503);
    }
    const id=await response.json();if(id!==data.request_id)return result({error:'temporarily_unavailable'},503);
-   return result({saved:true,request_id:id},201);
+   let callbackReceipt;try{callbackReceipt=await issueConsultationReceipt(env,id,data.product_id);}catch{}
+   return result({saved:true,request_id:id,...(callbackReceipt?{callback_receipt:callbackReceipt}:{})},201);
   }catch{return result({error:'temporarily_unavailable'},503);}
  };
 }

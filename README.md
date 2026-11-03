@@ -1,3 +1,7 @@
+# Thông báo gọi lại — 03/11/2026
+
+Nhóm nhận mới **Recall**, bot callback riêng với `TELEGRAM_CALLBACK_BOT_TOKEN` và `TELEGRAM_CALLBACK_CHAT_ID`. Đã xác minh bot/nhóm/quyền gửi qua Telegram Bot API (GET health ready), phát hành `consultation-callback` v4 và `purchase-request` v12. Chỉ sau đăng ký lưu thành công và khách chọn Để nhân viên liên hệ sau mới gửi thông báo; claim database chống trùng, giữ lead khi lỗi. Không đổi schema/RLS/SePay/bot thanh toán. 97 tests, PostgreSQL cục bộ, Python, Deno, check/build và browser mobile/desktop đạt. Chưa gửi tin thử thật. Hướng dẫn và danh sách file: [telegram-callback-setup-2026-11-03.md](Docs/telegram-callback-setup-2026-11-03.md).
+
 # Xác nhận tư vấn và lựa chọn chat — 03/11/2026
 
 Form chỉ chuyển sang “CloudFit đã nhận yêu cầu tư vấn!” sau API xác nhận lưu. Khách chọn Chat ngay hoặc Để nhân viên liên hệ sau; tái sử dụng dialog hiện có, không tự gửi tin. Receipt theo gói trong sessionStorage giữ mã yêu cầu, gói và trạng thái, không lưu họ tên/điện thoại; quay lại/reload cùng phiên không tự gửi lại. Có tiếp nhận nhân viên mô phỏng ghi rõ nhãn, chưa có back office hay nhân viên nhận thật. Không đổi backend/DB/Telegram/SePay. 84 tests, check/build và browser mobile/desktop đạt. Chi tiết: `Docs/consultation-confirmation-2026-11-03.md`. Các mục dưới là lịch sử.

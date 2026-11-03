@@ -10,7 +10,7 @@ function field(value, limit) {
   return cleaned;
 }
 
-export function formatPurchaseNotification(record, summary = null) {
+export function formatPurchaseNotification(record, summary = null, purpose = 'consultation') {
   const id = field(record?.id, 128);
   const productId = field(record?.product_id, 128);
   const productName = field(record?.product_name, 200);
@@ -22,7 +22,8 @@ export function formatPurchaseNotification(record, summary = null) {
     timeZone: 'Asia/Ho_Chi_Minh', dateStyle: 'short', timeStyle: 'medium',
   }).format(new Date(createdAt));
   return [
-    `Có yêu cầu tư vấn gói dịch vụ mới${record.is_test === true ? ' — DỮ LIỆU THỬ' : ''}`,
+    `${purpose==='callback'?'CLOUDFIT – YÊU CẦU GỌI LẠI':'Có yêu cầu tư vấn gói dịch vụ mới'}${record.is_test === true ? ' — DỮ LIỆU THỬ' : ''}`,
+    ...(purpose==='callback'?['Khách đã chọn: Để nhân viên liên hệ sau.']:[]),
     `Mã yêu cầu: ${id}`,
     `Gói: ${productName}`,
     `Mã gói: ${productId}`,
@@ -36,14 +37,14 @@ export function formatPurchaseNotification(record, summary = null) {
 }
 
 export async function sendPurchaseNotification({
-  record, botToken, chatId, summary = null, fetchImpl = fetch, timeoutMs = 10000,
+  record, botToken, chatId, summary = null, purpose = 'consultation', fetchImpl = fetch, timeoutMs = 10000,
 }) {
   if (typeof botToken !== 'string' || !botToken.trim()
     || typeof chatId !== 'string' || !chatId.trim()) {
     return { status: 'failed', code: 'missing_configuration' };
   }
   let text;
-  try { text = formatPurchaseNotification(record, summary); }
+  try { text = formatPurchaseNotification(record, summary, purpose); }
   catch { return { status: 'failed', code: 'invalid_saved_request' }; }
 
   try {

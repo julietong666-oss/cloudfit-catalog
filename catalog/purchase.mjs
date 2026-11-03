@@ -13,11 +13,17 @@ export async function submitPurchase(data,fetchImpl=fetch){
   throw error;
  }
 }
+export async function requestContactLater(data,fetchImpl=fetch){
+ const response=await fetchImpl(`${SUPABASE_URL}/functions/v1/consultation-callback`,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify({action:data.action==='status'?'status':'contact_later',request_id:data.requestId,product_id:data.productId,receipt:data.callbackReceipt}),signal:AbortSignal.timeout(20000)});
+ const body=await response.json();
+ if(response.ok&&body.request_id===data.requestId&&['sent','processing','unknown','failed',...(data.action==='status'?['not_requested']:[])].includes(body.status))return body;
+ const error=new Error('Yêu cầu tư vấn vẫn đã lưu. Chưa xác nhận được thông báo gọi lại; bạn có thể kiểm tra lại hoặc gọi hotline.');error.code=body.error;throw error;
+}
 const requestUuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // Receipt metadata only. Contact details and chat answers never enter storage or URLs.
 export function consultationReceipt(data,state='saved'){
  if(!requestUuid.test(data?.requestId||'')||!data?.productId||!data?.productName||!['pending','saved'].includes(state))return null;
- return {version:1,state,requestId:data.requestId,productId:String(data.productId),productName:String(data.productName).slice(0,200)};
+ return {version:1,state,requestId:data.requestId,productId:String(data.productId),productName:String(data.productName).slice(0,200),...(typeof data.callbackReceipt==='string'&&/^v1\.\d{10}\.[a-f0-9]{64}$/.test(data.callbackReceipt)?{callbackReceipt:data.callbackReceipt}:{}),...(['sent','processing','unknown','failed'].includes(data.callbackState)?{callbackState:data.callbackState}:{})};
 }
 export function readConsultationReceipt(raw,product){
  try{
@@ -40,14 +46,14 @@ export function createPurchaseForm(product){
  const name=input('Họ và tên','contact_name','text','name');name.maxLength=120;
  const phone=input('Số điện thoại','phone','tel','tel');phone.pattern='[+0-9 ()-]{8,24}';phone.maxLength=24;phone.inputMode='tel';
  const consent=node('label',undefined,'cf-consent'),check=document.createElement('input');check.type='checkbox';check.required=true;
- consent.append(check,document.createTextNode('Tôi đồng ý dùng tên và số điện thoại để liên hệ tư vấn giải pháp và gói dịch vụ phù hợp; thông tin hoá đơn thanh toán thử nghiệm được thông báo đến người phụ trách qua Telegram sau khi SePay xác nhận.'));fields.append(consent);
+ consent.append(check,document.createTextNode('Tôi đồng ý dùng tên và số điện thoại để liên hệ tư vấn giải pháp và gói dịch vụ phù hợp; khi chọn “Để nhân viên liên hệ sau”, tên, số điện thoại và gói quan tâm được gửi đến nhóm tư vấn riêng qua Telegram để nhân viên gọi lại.'));fields.append(consent);
  const trap=document.createElement('input');Object.assign(trap,{name:'website',type:'text',tabIndex:-1,autocomplete:'off',hidden:true});fields.append(trap);
  const button=node('button','Gửi yêu cầu tư vấn');button.type='submit';fields.append(button);
  const status=node('p');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
  const storageKey=`cf-purchase-${product.id}`;
  let previous;try{previous=readConsultationReceipt(sessionStorage.getItem(storageKey),product);}catch{}
  let requestId=previous?.requestId||crypto.randomUUID(),busy=false,saved=previous?.state==='saved',handoff=previous?.state==='saved'?previous:null;
- const store=state=>{try{sessionStorage.setItem(storageKey,JSON.stringify(consultationReceipt({requestId,productId:product.id,productName:product.name},state)));return true;}catch{return false;}};
+ const store=state=>{try{sessionStorage.setItem(storageKey,JSON.stringify(consultationReceipt({requestId,productId:product.id,productName:product.name,callbackReceipt:handoff?.callbackReceipt,callbackState:handoff?.callbackState},state)));return true;}catch{return false;}};
  function confirmation(focus=false,persisted=true){
   const panel=node('section',undefined,'cf-consultation-confirmation');
   const title=node('h3','CloudFit đã nhận yêu cầu tư vấn!');title.tabIndex=-1;title.dataset.confirmationTitle='';
@@ -62,11 +68,44 @@ export function createPurchaseForm(product){
    const unhandled=form.dispatchEvent(event);
    status.textContent=unhandled?'Chưa mở được khung chat. Yêu cầu tư vấn vẫn đã lưu; bạn có thể thử lại hoặc để nhân viên liên hệ sau.':'';
   });
-  later.addEventListener('click',()=>{location.hash='#catalog';document.querySelector('#catalog-heading')?.focus();});
-  actions.append(chat,later);
+  let notifying=false;
+  const backToCatalog=()=>{location.hash='#catalog';document.querySelector('#catalog-heading')?.focus();};
+  const callbackFeedback=()=>{
+   if(handoff.callbackState==='processing')status.textContent='Thông báo đang được xử lý. Yêu cầu tư vấn vẫn đã lưu; không cần đăng ký lại.';
+   else if(handoff.callbackState==='unknown')status.textContent='Chưa xác nhận được việc gửi thông báo. Yêu cầu tư vấn vẫn đã lưu; vui lòng liên hệ hotline nếu cần hỗ trợ.';
+  };
+  later.disabled=['processing','unknown'].includes(handoff.callbackState);
+  later.addEventListener('click',async()=>{
+   if(notifying)return;
+   if(handoff.callbackState==='sent'){backToCatalog();return;}
+   if(!handoff.callbackReceipt){status.textContent='Yêu cầu trước đã được lưu nhưng phiên này chưa có biên nhận gửi thông báo gọi lại. Vui lòng gọi hotline; không cần đăng ký lại.';return;}
+   notifying=true;later.disabled=true;chat.disabled=true;later.textContent='Đang thông báo để nhân viên gọi lại…';
+   status.textContent='Yêu cầu tư vấn đã lưu. Đang gửi thông báo gọi lại…';
+   try{
+    const result=await requestContactLater(handoff);handoff.callbackState=result.status;store('saved');
+    if(result.status==='sent'){status.textContent='Đã thông báo để nhân viên gọi lại.';backToCatalog();}
+    else if(result.status==='failed')status.textContent='Yêu cầu tư vấn vẫn đã lưu. Chưa gửi được thông báo gọi lại; vui lòng thử lại hoặc gọi hotline.';
+    else callbackFeedback();
+   }catch(error){status.textContent=error?.code==='callback_rate_limited'?'Yêu cầu tư vấn vẫn đã lưu. Vui lòng chờ một phút trước khi thử gửi lại thông báo gọi lại.':'Yêu cầu tư vấn vẫn đã lưu. Chưa xác nhận được thông báo gọi lại; bạn có thể kiểm tra lại hoặc gọi hotline.';}
+   finally{notifying=false;chat.disabled=false;later.disabled=['processing','unknown'].includes(handoff.callbackState);later.textContent='Để nhân viên liên hệ sau';updateButtons();}
+  });
+  const recheck=node('button','Kiểm tra trạng thái thông báo','cf-consultation-later');recheck.type='button';
+  const updateButtons=()=>{later.disabled=['processing','unknown'].includes(handoff.callbackState);recheck.hidden=!['processing','unknown'].includes(handoff.callbackState);};
+  recheck.addEventListener('click',async()=>{
+   recheck.disabled=true;
+   try{
+    const result=await requestContactLater({...handoff,action:'status'});
+    handoff.callbackState=result.status==='not_requested'?undefined:result.status;store('saved');
+    if(result.status==='sent'){backToCatalog();return;}
+    status.textContent='Yêu cầu tư vấn vẫn đã lưu. Bạn có thể thử gửi thông báo gọi lại.';callbackFeedback();
+   }catch{status.textContent='Chưa kiểm tra được trạng thái thông báo. Yêu cầu tư vấn vẫn đã lưu; vui lòng thử lại sau.';}
+   finally{recheck.disabled=false;updateButtons();}
+  });
+  updateButtons();actions.append(chat,later,recheck);
   panel.append(title,detail,interest,waiting,actions,node('p','Khung chat hiện là bản mô phỏng, chưa kết nối nhân viên trực tuyến.','cf-consultation-note'));
   form.replaceChildren(panel,status);
   status.textContent=persisted?'':'Yêu cầu đã lưu. Trình duyệt không lưu được phiên; hãy giữ trang này để tiếp tục, tránh gửi lại yêu cầu sau khi tải lại.';
+  callbackFeedback();
   if(focus)title.focus();
  }
  form.append(heading,description,node('p',`Gói quan tâm: ${product.name}`),fields,status);
@@ -78,7 +117,7 @@ export function createPurchaseForm(product){
    store('pending');
    const result=await submitPurchase({request_id:requestId,product_id:product.id,contact_name:name.value.trim(),phone:phone.value,consent:check.checked,website:trap.value});
    saved=true;
-   handoff={requestId:result.request_id,productId:product.id,productName:product.name,contactName:name.value.trim(),phone:phone.value};
+   handoff={requestId:result.request_id,productId:product.id,productName:product.name,contactName:name.value.trim(),phone:phone.value,callbackReceipt:result.callback_receipt};
    confirmation(true,store('saved'));
   }catch(error){
    status.textContent=error.message||'Chưa xác nhận được yêu cầu tư vấn đã lưu. Vui lòng thử lại.';button.textContent='Gửi lại yêu cầu tư vấn';

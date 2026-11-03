@@ -15,7 +15,7 @@ test('intake only returns saved after DB confirms the same request ID; never tru
  const h=createIntakeHandler({env,fetchImpl:async(url,init)=>{
   const body=JSON.parse(init.body);assert.equal(body.p_id,id);assert.equal(body.p_phone,'0000000000');assert.equal(body.product_name,undefined);assert.equal(init.headers.apikey,'test-server');return Response.json(id);
  }});
- const r=await h(request({...input,product_name:'untrusted'}));assert.equal(r.status,201);assert.deepEqual(await r.json(),{saved:true,request_id:id});assert.equal(r.headers.get('Access-Control-Allow-Origin'),'https://cloudfitk.vercel.app');
+ const r=await h(request({...input,product_name:'untrusted'}));assert.equal(r.status,201);const body=await r.json();assert.equal(body.saved,true);assert.equal(body.request_id,id);assert.match(body.callback_receipt,/^v1\.\d{10}\.[a-f0-9]{64}$/);assert.equal(r.headers.get('Access-Control-Allow-Origin'),'https://cloudfitk.vercel.app');
 });
 test('intake rejects other origins and responds to CORS preflight without DB access',async()=>{
  const h=createIntakeHandler({env,fetchImpl:()=>assert.fail()});

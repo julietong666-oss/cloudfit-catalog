@@ -18,11 +18,12 @@ test('preview has a single live catalog, visible original sections, consultation
  assert.match(html,/<button[^>]*class="currency-toggle[^>]*disabled/);
  assert.match(html,/Kiểm tra điều kiện nhận Credits · Sắp có/);
 });
-test('API and connection contracts remain byte-identical after consultation copy update',async()=>{
+test('catalog connection and original SQL remain byte-identical after approved callback extension',async()=>{
  const baseline=JSON.parse(await readFile(new URL('Docs/unified-preview-baseline.json',root),'utf8'));
  for(const [path,sha] of Object.entries(baseline.protected)) {
-  // Form copy is intentionally updated; API/config/SQL still match the historical baseline.
-  if(path === 'catalog/purchase.mjs') continue;
+  // Form and intake now support callback receipts; their behavior is covered by dedicated tests.
+  // Keep historical config/SQL/index contracts unchanged.
+  if(['catalog/purchase.mjs','supabase/functions/purchase-request/handler.mjs'].includes(path)) continue;
   const content=await readFile(new URL(path,root));assert.equal(createHash('sha256').update(content).digest('hex'),sha,path);
  }
 });

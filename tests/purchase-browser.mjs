@@ -7,10 +7,15 @@ const browser=await chromium.launch({executablePath:process.env.CHROME_PATH || '
 try {
  for (const width of [390,1440]) {
   const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
-  let attempts=0, release;
+  let attempts=0, callbackAttempts=0, release;
   const ids=[], errors=[];
   await context.route('**/*', async route=>{
    const req=route.request(), url=new URL(req.url());
+   if(url.pathname==='/functions/v1/consultation-callback'){
+    callbackAttempts++;const data=req.postDataJSON();assert.equal(data.action,'contact_later');assert.equal(data.request_id,ids.at(-1));assert.equal(data.contact_name,undefined);assert.equal(data.phone,undefined);assert.equal(data.chat_id,undefined);
+    if(callbackAttempts===1)return route.fulfill({status:503,json:{error:'consultation_destination_missing'}});
+    return route.fulfill({status:200,json:{request_id:data.request_id,status:'sent'}});
+   }
    if (url.pathname === '/functions/v1/purchase-request') {
     assert.equal(req.method(),'POST');
     const data=req.postDataJSON();ids.push(data.request_id);attempts++;
@@ -21,7 +26,7 @@ try {
      await new Promise(resolve=>{release=resolve;});
      return route.fulfill({status:503,json:{error:'temporarily_unavailable'}});
     }
-    return route.fulfill({status:201,json:{saved:true,request_id:data.request_id}});
+    return route.fulfill({status:201,json:{saved:true,request_id:data.request_id,callback_receipt:'v1.'+(Math.floor(Date.now()/1000)+3600)+'.'+'a'.repeat(64)}});
    }
    if (url.origin === origin || (url.protocol==='https:' && ['cdn.tailwindcss.com','fonts.googleapis.com','fonts.gstatic.com'].includes(url.hostname))) return route.continue();
    return route.abort();
@@ -90,7 +95,12 @@ try {
   await page.getByRole('button',{name:'Đóng khung tư vấn',exact:true}).click();
   await form.evaluate(f=>f.dispatchEvent(new Event('submit',{cancelable:true})));
   assert.equal(attempts,2,'saved form prevents repeat submission');
+  assert.equal(callbackAttempts,0,'chat, mock assignment and closing never send callback notification');
   const detailHash=new URL(page.url()).hash;
+  await form.getByRole('button',{name:'Để nhân viên liên hệ sau',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelector('.cf-purchase [role=status]')?.textContent.includes('Chưa xác nhận được thông báo gọi lại'));
+  assert.equal(attempts,2,'notification failure never recreates saved request');
+  assert.equal(new URL(page.url()).hash,detailHash);
   await form.getByRole('button',{name:'Để nhân viên liên hệ sau',exact:true}).click();
   await page.waitForURL('**/#catalog');
   assert.equal(await page.locator('#consult-dialog').isVisible(),false);
@@ -100,7 +110,13 @@ try {
   await page.reload();
   await page.getByRole('button',{name:'Đăng ký tư vấn gói này',exact:true}).click();
   await form.getByRole('heading',{name:'CloudFit đã nhận yêu cầu tư vấn!',exact:true}).waitFor();
-  assert.equal(attempts,2,'navigation and reload restore receipt without any POST');
+  assert.equal(attempts,2,'navigation and reload restore receipt without any registration POST');
+  const callbackCount=callbackAttempts;
+  await form.getByRole('button',{name:'Để nhân viên liên hệ sau',exact:true}).click();
+  await page.waitForURL('**/#catalog');
+  assert.equal(callbackAttempts,callbackCount,'saved sent receipt never notifies again on reload');
+  await page.goto(origin+'/'+detailHash);
+  await page.getByRole('button',{name:'Đăng ký tư vấn gói này',exact:true}).click();
   assert.equal(await page.locator('#consult-dialog').isVisible(),false);
   await page.evaluate(()=>{window.originalShowModal=HTMLDialogElement.prototype.showModal;HTMLDialogElement.prototype.showModal=function(){throw new Error('fixture unavailable');};});
   await form.getByRole('button',{name:'Chat ngay với nhân viên',exact:true}).click();
