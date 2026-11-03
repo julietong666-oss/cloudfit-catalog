@@ -146,3 +146,9 @@ test('read-only verification network diagnostics identify stage without exposing
   const response=await handler(new Request('https://callback.example'));assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:code});
  }
 });
+
+test('ready health also proves runtime receipt signing; missing root fails closed without sending',async()=>{
+ const f=fixture();const noSigningKey={get:k=>['SUPABASE_SERVICE_ROLE_KEY','SUPABASE_SECRET_KEYS'].includes(k)?undefined:values[k]};
+ const response=await createCallbackHandler({env:noSigningKey,fetchImpl:f.fetchImpl})(new Request('https://callback.example'));
+ assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:'callback_receipt_signing_unavailable'});assert.equal(f.state().sends,0);assert.equal(f.state().claims,0);
+});

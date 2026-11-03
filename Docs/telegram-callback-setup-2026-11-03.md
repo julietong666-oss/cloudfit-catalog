@@ -66,3 +66,9 @@ Yêu cầu tư vấn luôn được giữ lại dù Telegram lỗi. Biên nhận
 - `scripts/get-telegram-callback-chat.py`: công cụ xác minh ID chỉ đọc.
 - `tests/consultation-callback.test.mjs`, `callback-database.test.mjs`, `telegram-chat-discovery.test.py`, `purchase-browser.mjs`, `purchase.test.mjs`, `layout.test.mjs`: kiểm thử.
 - `package.json`, `README.md`, tài liệu này: kiểm tra và hướng dẫn phát hành.
+
+## Kiểm tra bổ sung khi chưa nhận thông báo
+
+Sau phản ánh của người dùng: yêu cầu Smart Workspace lúc 21:19 ngày 03/11 (giờ Việt Nam) đã lưu; tại thời điểm kiểm tra, log chưa có POST/OPTIONS callback sau lần lưu này và bảng delivery chưa có lượt gửi cho yêu cầu đó. Không kết luận người dùng chưa bấm nút; cần đối chiếu thông báo giao diện và khả năng tab cũ.
+
+Callback v5 bổ sung tự kiểm tra ký/xác minh biên nhận trong runtime thật trước khi trả ready. Probe không đọc/ghi database, không gửi Telegram và không trả biên nhận ra ngoài. Kiểm tra thực tế trả 200 ready. 98 tests đạt, gồm lỗi cấu hình ký bị chặn an toàn. Chưa có bằng chứng nhận tin Telegram thật; không tự phát lại dữ liệu khách hàng.

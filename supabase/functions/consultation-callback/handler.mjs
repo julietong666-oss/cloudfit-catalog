@@ -1,5 +1,5 @@
 import {createCallbackDestinationVerifier,CallbackConfigurationError} from '../_shared/callback-destination.mjs';
-import {serviceKey,verifyConsultationReceipt,receiptHash} from '../_shared/consultation-receipt.mjs';
+import {serviceKey,issueConsultationReceipt,verifyConsultationReceipt,receiptHash} from '../_shared/consultation-receipt.mjs';
 import {sendPurchaseNotification} from '../_shared/telegram.mjs';
 const origins=new Set(['https://cloudfitk.vercel.app','http://127.0.0.1:4173','http://localhost:4173']);
 export function createCallbackHandler({env,fetchImpl=fetch,now=Date.now}){
@@ -11,7 +11,13 @@ export function createCallbackHandler({env,fetchImpl=fetch,now=Date.now}){
   if(origin&&!origins.has(origin))return json({error:'origin_not_allowed'},403);
   if(req.method==='OPTIONS')return new Response(null,{status:204,headers:{...headers,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'content-type, apikey'}});
   if(req.method==='GET'){
-   try{await verifyDestination();return json({status:'ready',callback_bot_verified:true,callback_group_verified:true});}
+   try{
+    await verifyDestination();
+    // Exercise real runtime crypto without database access or returning a usable receipt.
+    try{const probeId='00000000-0000-4000-8000-000000000000',probe=await issueConsultationReceipt(env,probeId,'health-probe',now());if(!await verifyConsultationReceipt(env,probeId,'health-probe',probe,now()))throw new Error('verification_failed');}
+    catch{return json({error:'callback_receipt_signing_unavailable'},503);}
+    return json({status:'ready',callback_bot_verified:true,callback_group_verified:true});
+   }
    catch(error){return json({error:error instanceof CallbackConfigurationError?error.code:'callback_verification_unavailable'},503);}
   }
   if(req.method!=='POST')return json({error:'method_not_allowed'},405);
