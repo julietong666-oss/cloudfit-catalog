@@ -113,7 +113,7 @@
 .cf-payment-success { --chat-blue:#005bbf; width:min(460px,calc(100% - 32px)); border:1px solid #c1c6d6; border-radius:24px; padding:32px; background:#fff; color:#1a1b1e; text-align:center; font:14px/1.6 'Be Vietnam Pro',sans-serif; }
 .cf-payment-success::backdrop { background:#001a4180; }
 .cf-payment-success h2 { font-size:24px; font-weight:600; margin:12px 0; }
-.cf-payment-success p { margin:12px 0; }
+.cf-payment-success p { margin:12px 0; overflow-wrap:anywhere; }
 .cf-payment-success :focus-visible { outline:3px solid #005bbf; outline-offset:3px; }
 .cf-success-check { display:grid; place-items:center; width:64px; height:64px; border-radius:50%; background:#e5f5e8; color:#006e2c; margin:0 auto 16px; font-size:32px; }
 @media(max-width:700px) {
@@ -127,3 +127,8 @@
 .cf-chat-top { position:sticky; top:0; z-index:2; background:#fff; }
 .cf-order-enterprise { border-block:1px solid #efedf1; margin-bottom:12px; }
 .cf-order-enterprise summary { color:#005bbf; min-height:44px; padding:10px 0; cursor:pointer; font-size:12px; }
+
+#sepay-return[hidden] { display:none!important; }
+#sepay-return { margin-top:88px; scroll-margin-top:88px; }
+#sepay-return h2 { font-size:22px; font-weight:600; }
+#sepay-return p { margin:12px 0; overflow-wrap:anywhere; }

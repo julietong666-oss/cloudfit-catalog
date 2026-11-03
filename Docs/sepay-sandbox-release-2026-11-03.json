@@ -1,0 +1,49 @@
+{
+  "production": "https://cloudfitk.vercel.app",
+  "deployment": "dpl_7nrm5f5SHdCgDUQk8nwM8fGancdF",
+  "status": "READY",
+  "baseCommit": "9a8aa1bdbc8f584e0fc4e3a958d19c32ac4436df",
+  "sourceStatus": "local-workspace-uncommitted",
+  "environment": "sandbox",
+  "realPayments": 0,
+  "files": {
+    "catalog/app.mjs": "2426f17d99034dc23b5c307a3329eb0c2acb10e57facda1123c7717ad5b238e6",
+    "catalog/auth-ui.mjs": "69b33caa0fafd4484275ef4d005647bce635fbb85bfdcf88e3c686f1df14e7b9",
+    "catalog/auth.mjs": "44527a0f24834fd0c146280c1290dfa75c406f2d327c8b685ecf6412ec0d9857",
+    "catalog/catalog.css": "ce837b6b41ed2b1c0a52136b8c2afc003d7c084fa1627ff748f14b42cbc53a30",
+    "catalog/chat-order.mjs": "03800d3000f391ffd668ec62aa6374406c7670349b16162ccdec9400970fb54f",
+    "catalog/chat-ui.mjs": "3e30f871fe08fe4477fe63cea1d2bf669ab0628ae40a25d185cddb4ba31343db",
+    "catalog/chat.css": "1b6b8991bc988e4f7f1501d0caf87902924050692250ef95bdfb00fdd64d51e1",
+    "catalog/chat.mjs": "3756229bfba9e53d1097e54ba8b2101c11825ddf7f81d2c77026abe07557c54d",
+    "catalog/consultation-chat.mjs": "345744f4c8b3f1d8fcc6a8fb7e2ee5658b193bb222e204c798557aa01430ca7f",
+    "catalog/data.mjs": "70d63b0e131f9bffaf5a7cb3b90af261affcc7829a8d8bfe0351e366fdea6ddb",
+    "catalog/demo-payment-qr.svg": "206888b9843d4d979a39dd9bb376206f9597467b750cc0f2400dcc7832c89111",
+    "catalog/design-ui.mjs": "59f8ddcb52fe548d1737656a009b9d6db72a7cc6f084dc0211f177485a75da47",
+    "catalog/logic.mjs": "3a8ffe8fbca303ae353e094767ffc91a23f4afb002abf27f311434a54a6b3cdb",
+    "catalog/purchase.mjs": "3c5e38958b40fd9e76af4e3c2ed0161c7efa6c40ebff027350e1ef6803274d80",
+    "catalog/sepay-sandbox.mjs": "2ea7e2c2ff3f50edbbb12586625dd1252270d71786b73e6d03e5b5f43950da83",
+    "catalog/supabase-config.mjs": "1df6d6d80e158c5ec807e372ef39584d679fbec466ed18524053104a13b81bfd",
+    "catalog/vendor/supabase-2.118.0.js": "ee3be8de192b97cb1d73d1e95d6b82bb1f6b658c0f97c4ef757fc331996ed3d3",
+    "catalog/vendor/supabase-LICENSE": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+    "code.html": "72b279d292698faf17699f5167f5d6bf40b19ad369edb19ae44e9a1e5b0e7b46",
+    "index.html": "72b279d292698faf17699f5167f5d6bf40b19ad369edb19ae44e9a1e5b0e7b46"
+  },
+  "edgeFunctions": {
+    "sepay-sandbox": 2,
+    "sepay-sandbox-ipn": 2,
+    "sandbox-payment-notify": 2
+  },
+  "verification": {
+    "nodeTests": 63,
+    "denoSdkTest": "passed",
+    "localPostgres": "passed",
+    "browserWidths": [
+      390,
+      1440
+    ],
+    "liveCheckoutProviderRequests": "intercepted; none forwarded",
+    "liveTestInvoicesCreated": 0,
+    "telegramTestMessagesSent": 0,
+    "actualMerchantSandboxEndToEnd": "awaiting user Secrets/IPN setup"
+  }
+}

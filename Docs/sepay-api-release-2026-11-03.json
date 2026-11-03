@@ -1,0 +1,135 @@
+{
+  "website": "https://cloudfitk.vercel.app",
+  "deployment": "dpl_BnHbBDxwxKut78aPYt4ZtBpRqqj6",
+  "deploymentState": "READY",
+  "sourceStatus": "tested-local-workspace-before-git-sync",
+  "baseCommit": "9a8aa1bdbc8f584e0fc4e3a958d19c32ac4436df",
+  "environment": "sandbox",
+  "edgeFunctions": {
+    "sepay-sandbox": 12,
+    "sepay-sandbox-ipn": 11
+  },
+  "schemaChanged": false,
+  "secretsChanged": false,
+  "realMoneyTransactions": 0,
+  "sandboxVerification": {
+    "invoice": "CFSBX5FE0E68027CC4D5E88E276A60ACE4624",
+    "amount": 10000,
+    "currency": "VND",
+    "backendStatus": "paid",
+    "payment_verified": true,
+    "popupObserved": true,
+    "telegramStatus": "sent",
+    "telegramMessageId": 14,
+    "notificationRecords": 1
+  },
+  "remainingLimitations": [
+    "IPN secret configuration contains invalid whitespace/control characters; not modified.",
+    "SePay onboarding test without X-Secret-Key remains rejected.",
+    "Automatic provider redirect was not established; the supplied callback URL was opened in the originating test session after provider simulation."
+  ],
+  "assets": [
+    {
+      "file": "index.html",
+      "matches": true,
+      "sha256": "72b279d292698faf17699f5167f5d6bf40b19ad369edb19ae44e9a1e5b0e7b46"
+    },
+    {
+      "file": "code.html",
+      "matches": true,
+      "sha256": "72b279d292698faf17699f5167f5d6bf40b19ad369edb19ae44e9a1e5b0e7b46"
+    },
+    {
+      "file": "catalog/design-ui.mjs",
+      "matches": true,
+      "sha256": "59f8ddcb52fe548d1737656a009b9d6db72a7cc6f084dc0211f177485a75da47"
+    },
+    {
+      "file": "catalog/supabase-config.mjs",
+      "matches": true,
+      "sha256": "1df6d6d80e158c5ec807e372ef39584d679fbec466ed18524053104a13b81bfd"
+    },
+    {
+      "file": "catalog/data.mjs",
+      "matches": true,
+      "sha256": "70d63b0e131f9bffaf5a7cb3b90af261affcc7829a8d8bfe0351e366fdea6ddb"
+    },
+    {
+      "file": "catalog/catalog.css",
+      "matches": true,
+      "sha256": "ce837b6b41ed2b1c0a52136b8c2afc003d7c084fa1627ff748f14b42cbc53a30"
+    },
+    {
+      "file": "catalog/logic.mjs",
+      "matches": true,
+      "sha256": "3a8ffe8fbca303ae353e094767ffc91a23f4afb002abf27f311434a54a6b3cdb"
+    },
+    {
+      "file": "catalog/chat.mjs",
+      "matches": true,
+      "sha256": "3756229bfba9e53d1097e54ba8b2101c11825ddf7f81d2c77026abe07557c54d"
+    },
+    {
+      "file": "catalog/chat-order.mjs",
+      "matches": true,
+      "sha256": "03800d3000f391ffd668ec62aa6374406c7670349b16162ccdec9400970fb54f"
+    },
+    {
+      "file": "catalog/chat.css",
+      "matches": true,
+      "sha256": "e9ee1b08660b143c344e75376b7696eb44b3836d843b201bd449cbea0309f3d5"
+    },
+    {
+      "file": "catalog/purchase.mjs",
+      "matches": true,
+      "sha256": "3c5e38958b40fd9e76af4e3c2ed0161c7efa6c40ebff027350e1ef6803274d80"
+    },
+    {
+      "file": "catalog/auth-ui.mjs",
+      "matches": true,
+      "sha256": "69b33caa0fafd4484275ef4d005647bce635fbb85bfdcf88e3c686f1df14e7b9"
+    },
+    {
+      "file": "catalog/app.mjs",
+      "matches": true,
+      "sha256": "2426f17d99034dc23b5c307a3329eb0c2acb10e57facda1123c7717ad5b238e6"
+    },
+    {
+      "file": "catalog/consultation-chat.mjs",
+      "matches": true,
+      "sha256": "345744f4c8b3f1d8fcc6a8fb7e2ee5658b193bb222e204c798557aa01430ca7f"
+    },
+    {
+      "file": "catalog/auth.mjs",
+      "matches": true,
+      "sha256": "44527a0f24834fd0c146280c1290dfa75c406f2d327c8b685ecf6412ec0d9857"
+    },
+    {
+      "file": "catalog/chat-ui.mjs",
+      "matches": true,
+      "sha256": "ff101515b804765ad4b543f09f451d90d629e2882124df59387a88bb2b3304dc"
+    },
+    {
+      "file": "catalog/sepay-sandbox.mjs",
+      "matches": true,
+      "sha256": "db80408f876827dfea14e9d2e8d175ea6162f5f768f767def072fdc409b4cedb"
+    },
+    {
+      "file": "catalog/demo-payment-qr.svg",
+      "matches": true,
+      "sha256": "206888b9843d4d979a39dd9bb376206f9597467b750cc0f2400dcc7832c89111"
+    },
+    {
+      "file": "catalog/vendor/supabase-LICENSE",
+      "matches": true,
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+    },
+    {
+      "file": "catalog/vendor/supabase-2.118.0.js",
+      "matches": true,
+      "sha256": "ee3be8de192b97cb1d73d1e95d6b82bb1f6b658c0f97c4ef757fc331996ed3d3"
+    }
+  ],
+  "unitTestsPassed": 82,
+  "returnQueryCompatibility": "provider-added query fields ignored as payment evidence"
+}

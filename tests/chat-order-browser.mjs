@@ -60,12 +60,9 @@ try {
   await lastCard().locator('img.cf-bank-qr[src^="blob:"]').waitFor();
   const qr=await lastCard().locator('img.cf-bank-qr').getAttribute('src');assert.ok(qr.startsWith('blob:'));
   await page.getByRole('button',{name:'Mô phỏng nhận đủ tiền',exact:true}).click();
-  const popup=page.getByRole('dialog',{name:'Đã đăng ký gói thành công',exact:true});await popup.waitFor();
-  assert.match(await popup.textContent(),/Cảm ơn doanh nghiệp/);
-  assert.match(await popup.textContent(),/Mô phỏng/);
-  assert.notEqual(await page.locator('#payment-success-close').evaluate(b=>getComputedStyle(b).backgroundColor),'rgba(0, 0, 0, 0)');
-  await page.screenshot({path:`/tmp/cloudfit-payment-success-${width}.png`});
-  await page.getByRole('button',{name:'Quay lại hội thoại',exact:true}).click();
+  assert.equal(await page.locator('#payment-success').isVisible(),false,'manual simulation is not backend payment confirmation');
+  assert.match(await page.locator('#offer-feedback').textContent(),/không phải IPN SePay/);
+  assert.match(await lastCard().textContent(),/Đã nhận tiền.*mẫu/);
   assert.equal(await lastCard().getByRole('button',{name:'Huỷ',exact:true}).count(),0);
   assert.equal(await page.locator('#simulate-receipt').isDisabled(),true);
   await page.locator('.cf-chat-directory summary').click();

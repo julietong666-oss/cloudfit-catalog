@@ -47,3 +47,18 @@ test('restart creates a fresh survey while preserving actual package context exp
  assert.equal(previous.step,1);
  assert.equal(questions.length,5);
 });
+
+import { createConsultationConversation } from '../catalog/consultation-chat.mjs';
+import { createDemoOffer } from '../catalog/chat-order.mjs';
+test('saved consultation retains contact and package context without fictional staff assignment',()=>{
+ const contact={requestId:'20000000-0000-4000-8000-000000000001',productId:'sample',productName:'Gói quan tâm',contactName:'Khách mẫu',phone:'0000000000'};
+ let conversation=createConsultationConversation(contact,questions[0].text);
+ assert.deepEqual(conversation.contact,contact);
+ assert.equal(conversation.source,'consultation');
+ assert.equal(conversation.interest,contact.productName);
+ assert.match(conversation.messages[1].text,/chưa có nhân viên/i);
+ for(const question of questions)conversation=answerConversation(conversation,question.choices[0]);
+ assert.throws(()=>createDemoOffer(conversation,{}),/Không dùng công cụ mô phỏng/);
+ assert.match(conversation.messages.at(-1).text,/chưa có kết nối chat trực tuyến/);
+ assert.throws(()=>createConsultationConversation({...contact,requestId:'bad'},questions[0].text));
+});

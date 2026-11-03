@@ -15,6 +15,7 @@ function integer(value, label, max) {
 }
 export function activeOrder(conversation) { return conversation.orders?.at(-1); }
 export function createDemoOffer(conversation, data, id = crypto.randomUUID()) {
+ if (conversation.source==='consultation') throw new Error('Không dùng công cụ mô phỏng để thanh toán cho yêu cầu tư vấn thật.');
  if (conversation.step !== questions.length) throw new Error('Cần hoàn tất khảo sát trước khi gửi phiếu.');
  if (activeOrder(conversation) && activeOrder(conversation).status !== 'cancelled') throw new Error('Phiếu hiện tại chưa huỷ hoặc đã thanh toán; không tạo phiếu trùng.');
  if (!uuid.test(id) || conversation.orders?.some(order => order.id === id)) throw new Error('Mã phiếu không hợp lệ hoặc đã tồn tại.');

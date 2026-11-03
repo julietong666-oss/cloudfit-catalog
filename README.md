@@ -1,3 +1,35 @@
+# Đã deploy và kiểm chứng SePay Sandbox qua API — 03/11/2026
+
+Website https://cloudfitk.vercel.app, deployment `dpl_BnHbBDxwxKut78aPYt4ZtBpRqqj6` READY. Edge Functions: sepay-sandbox v12, sepay-sandbox-ipn v11. 20/20 assets live khớp build. Đã thử một hóa đơn giả lập 10.000 VND: SePay Sandbox chấp nhận checkout, nút Giả lập thanh toán tạo giao dịch thử, API xác nhận → DB paid → payment_verified=true → popup đúng nội dung; Telegram ghi sent/message 14, một delivery. Không có tiền thật, không đổi schema/RLS/Secrets.
+
+Checkout đã tách phụ thuộc khóa IPN để dùng xác minh API độc lập. IPN riêng vẫn báo cấu hình khóa có ký tự không hợp lệ; nút onboarding thiếu header vẫn bị từ chối, không làm thành công giả. Đã kiểm popup bằng callback URL SePay cung cấp trong phiên tạo đơn; chưa xác minh tự động redirect từ trang SePay. Bằng chứng phát hành: `Docs/sepay-api-release-2026-11-03.json`. 82 tests cuối cùng và browser fixture với callback có tham số bổ sung đạt. Mã nguồn được đồng bộ lên nhánh main của GitHub; các mốc chưa commit/chưa deploy bên dưới là lịch sử chuẩn bị. Các mục dưới là lịch sử chuẩn bị.
+
+# Xác minh thanh toán bằng API SePay Sandbox — local, chưa deploy
+
+Bổ sung xác minh server-to-server qua API chi tiết đơn hàng chính thức trước settlement. Khi IPN thiếu/đến chậm, nút kiểm tra trạng thái vẫn có thể đối chiếu SePay bằng Merchant credentials ở backend. Frontend chỉ mở popup khi DB đã paid và backend trả payment_verified=true. Giữ xác thực IPN, không làm nút test thiếu khóa thành công giả. Không đổi schema/RLS/Secrets, không deploy hoặc gửi giao dịch/Telegram thật. 81 Node tests, check/build, Deno/SDK, PostgreSQL local và browser 390/1440px đạt. Chi tiết và 13 file thay đổi: `Docs/sepay-api-verification-2026-11-03.md`. Các mốc phía dưới là lịch sử.
+
+# Sửa IPN Sandbox — 2026-11-03 (local, chưa deploy)
+
+Đã xác nhận POST hiện trả 503 `sandbox_not_configured` từ guard cấu hình của handler version 3; không phải gateway chặn JWT (cả ba function có `verify_jwt: false`). Thiếu `SEPAY_SANDBOX_IPN_SECRET` đủ gây lỗi này trước khi truy cập DB. Khóa IPN độc lập với khóa merchant, phải được cấu hình khớp ở tab IPN SePay và Supabase.
+
+Bản sửa local tách xác thực IPN khỏi merchant credentials, phân biệt lỗi cấu hình/DB, giữ kiểm tra khóa và settlement nguyên tử. Popup chỉ mở từ trạng thái backend hợp lệ; nút mô phỏng không mở popup. Đạt 72 Node tests, kiểm tra cú pháp/build, Deno/SDK, PostgreSQL cục bộ và browser fixture 390/1440px. Không deploy, không ghi thử Supabase/SePay/Telegram. Báo cáo và danh sách file: `Docs/sepay-ipn-debug-2026-11-03.md`. Các mục phía dưới là lịch sử trước bản sửa.
+
+# SePay Sandbox đã phát hành — 2026-11-03
+
+Website https://cloudfitk.vercel.app đã deploy bản SePay Sandbox `dpl_7nrm5f5SHdCgDUQk8nwM8fGancdF` READY. Thêm checkout qua SDK Node.js chính thức, lưu hoá đơn thử, endpoint IPN có xác thực, cập nhật paid nguyên tử, thông báo Telegram gắn nhãn THỬ NGHIỆM và popup dựa trên trạng thái backend. Success URL không phải bằng chứng thanh toán. Không dùng QR ngân hàng thật hoặc kích hoạt dịch vụ thật trong Sandbox.
+
+Đã áp dụng schema sandbox và phát hành 3 Edge Functions version 2; đã chuyển trigger Telegram từ tạo yêu cầu tư vấn sang hoá đơn Sandbox paid. Form tư vấn lưu thành công tự mở khung chat, giữ ngữ cảnh tên/điện thoại/gói/mã yêu cầu, nhưng chat giữa nhân viên thật và khách chưa có backend. Khung yêu cầu thật hiển thị Chờ phân công, không dùng admin/delivery giả.
+
+**Người dùng cần lưu 3 Secrets Sandbox và cấu hình IPN bên SePay** để chạy với tài khoản của mình. Hướng dẫn tại `Docs/sepay-sandbox-setup.md`; không gửi khóa qua chat. Code mẫu đã cung cấp chứa placeholder, không được dùng làm cấu hình. Chưa kiểm một giao dịch Sandbox thật qua tài khoản người dùng hoặc nhận tin Telegram thật.
+
+Kiểm chứng: 63 Node tests, check/build (20 files), Deno check + test SDK, SQL PostgreSQL cục bộ, browser fixture và frontend production 390/1440 qua API intercept đều đạt; 20/20 assets live byte-identical. Không gửi request ghi thử vào Supabase/Telegram/SePay thật. Hash phát hành: `Docs/sepay-sandbox-release-2026-11-03.json`. Source đang local chưa commit/push mới, base Git 9a8aa1b. Các mốc phía dưới là lịch sử.
+
+# Chuẩn bị luồng thật — 2026-11-03 (chưa deploy)
+
+Đã nhận và giữ nguyên QR Vietcombank doanh nghiệp tại `catalog/company-payment-qr.jpg`. Đã nối UI form tư vấn → chat sau khi API xác nhận lưu, giữ tên/số điện thoại/gói/mã yêu cầu, hiển thị Chờ phân công. Chat thật chưa có backend hội thoại nên phần nhu cầu bổ sung vẫn chỉ trong trang và có ghi rõ; tách khỏi công cụ thanh toán mô phỏng. 55 tests, check/build và browser form→chat 390/1440px qua API giả lập đạt.
+
+Người dùng đã cho phép mở rộng backend và chọn nhận tiền tự động. Khuyến nghị SePay để kết nối Vietcombank thật; chờ chủ tài khoản tạo/liên kết dịch vụ và xác minh QR/VA trước khi bật thanh toán. **Chưa nối webhook, chưa chuyển Telegram sang hoá đơn đã trả, chưa thay QR mặc định của checkout mẫu, chưa deploy/push các thay đổi mới.** Chi tiết, nguồn chính thức và điều kiện triển khai ở `Docs/live-payment-integration.md`. Mốc production bên dưới vẫn là bản trước.
+
 # Đã deploy QR giả lập và toàn bộ cập nhật — 2026-11-03
 
 Production **https://cloudfitk.vercel.app** — deployment **dpl_GejSsQc9Mk3XCpFsXrshxvQPXuzx**, **READY**. Phát hành toàn bộ nội dung tư vấn, CTA/chat mẫu, phân công admin mẫu, phiếu mua trong chat, thanh toán giả lập và popup cảm ơn. Tạo sẵn `catalog/demo-payment-qr.svg`; QR chỉ mã hoá `CLOUDFIT DEMO ONLY | NOT A BANK PAYMENT | NO REAL MONEY`, không chứa ngân hàng/tài khoản hoặc lệnh chuyển tiền. Dùng mặc định cho mọi phiếu, vẫn có thể chọn ảnh thay thế hoặc bấm **Dùng lại QR giả lập**.

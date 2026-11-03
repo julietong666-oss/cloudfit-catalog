@@ -1,4 +1,6 @@
 import { demoCustomers, questions, createConversation, answerConversation } from './chat.mjs';
+import { startSandboxCheckout, initSandboxReturn } from './sepay-sandbox.mjs';
+import { createConsultationConversation } from './consultation-chat.mjs';
 import { activeOrder, createDemoOffer, startDemoPayment, cancelDemoOrder, applyDemoReceipt } from './chat-order.mjs';
 
 const opener = document.querySelector('#consult-open');
@@ -22,6 +24,12 @@ const feedback = find('consult-feedback');
 const suggestions = find('consult-suggestions');
 const customerList = find('consult-customers');
 const context = find('consult-summary');
+const sampleNotice = find('consult-notice').textContent;
+const sampleBadge = dialog.querySelector('.cf-chat-badge').textContent;
+function customerFor(conversation) {
+ if(conversation.source==='consultation')return {company:conversation.contact.contactName,admin:'Chờ phân công',initials:'CF',specialty:'CloudFit · thu thập nhu cầu'};
+ return demoCustomers.find(item=>item.id===conversation.customerId);
+}
 function element(tag, text, className) {
   const node = document.createElement(tag);
   if (text !== undefined) node.textContent = text;
@@ -51,15 +59,17 @@ function renderDirectory() {
 }
 function renderSummary() {
   const conversation = current();
-  const customer = demoCustomers.find(item => item.id === activeId);
+  const customer = customerFor(conversation);
+  dialog.querySelector('.cf-chat-assignment span').textContent = conversation.source==='consultation' ? 'Người đăng ký tư vấn' : 'Khách hàng mẫu';
   find('consult-company').textContent = customer.company;
   find('consult-owner').textContent = customer.admin;
   find('consult-admin').textContent = customer.admin;
   find('consult-avatar').textContent = customer.initials;
-  find('consult-specialty').textContent = `${customer.specialty} · Admin mẫu`;
+  find('consult-specialty').textContent = conversation.source==='consultation' ? customer.specialty : `${customer.specialty} · Admin mẫu`;
   find('consult-progress').textContent = `${conversation.step}/${questions.length} thông tin đã chia sẻ`;
   context.replaceChildren();
   for (const [label, value] of [
+    ...(conversation.contact ? [['Mã yêu cầu',conversation.contact.requestId],['Họ tên',conversation.contact.contactName],['Số điện thoại',conversation.contact.phone]] : []),
     ['Gói quan tâm', conversation.interest || 'Chưa chọn gói · cần tư vấn'],
     ...questions.map(q => [q.label, conversation.answers[q.key] || 'Chưa chia sẻ']),
   ]) context.append(element('dt', label), element('dd', value));
@@ -70,10 +80,15 @@ function render() {
     transcript.replaceChildren(); renderedMessages = 0;
   }
   renderedId = activeId;
-  const admin = demoCustomers.find(item => item.id === activeId).admin;
+  const admin = customerFor(conversation).admin;
+  const fromForm = conversation.source === 'consultation';
+  find('consult-notice').textContent = fromForm ? 'Yêu cầu tư vấn đã lưu. Phần hỏi đáp bên dưới hiện là khảo sát trên trình duyệt, chưa kết nối nhân viên trực tuyến; tải lại trang sẽ mất câu trả lời bổ sung.' : sampleNotice;
+  dialog.querySelector('.cf-chat-badge').textContent = fromForm ? 'Chờ phân công' : sampleBadge;
+  dialog.querySelector('.cf-chat-directory').hidden = fromForm;
+  find('consult-complete').querySelector('p').textContent = fromForm ? 'Đã điền khảo sát trong trang này' : 'Đã hoàn tất khảo sát mẫu';
   for (const message of conversation.messages.slice(renderedMessages)) {
     const item = element('div', undefined, `cf-chat-message cf-chat-message--${message.role}`);
-    item.append(element('span', message.role === 'admin' ? `${admin} · kịch bản mẫu` : 'Khách hàng', 'cf-chat-sender'));
+    item.append(element('span', message.role === 'admin' ? (fromForm ? 'CloudFit · khảo sát' : `${admin} · kịch bản mẫu`) : 'Khách hàng', 'cf-chat-sender'));
     if (message.type === 'offer') {
       const card = element('section', undefined, 'cf-order-card');
       card.dataset.orderId = message.orderId;
@@ -89,7 +104,7 @@ function render() {
   find('consult-complete').hidden = Boolean(question);
   const order = activeOrder(conversation);
   find('consult-restart').disabled = Boolean(order && order.status !== 'cancelled');
-  find('consult-admin-tools').hidden = Boolean(question);
+  find('consult-admin-tools').hidden = Boolean(question) || fromForm;
   if (question) {
     find('consult-label').textContent = question.label;
     input.placeholder = 'Nhập câu trả lời của bạn…';
@@ -118,7 +133,8 @@ function send(text) {
 composer.addEventListener('submit', event => { event.preventDefault(); send(input.value); });
 find('consult-restart').addEventListener('click', () => {
   if (activeOrder(current()) && activeOrder(current()).status !== 'cancelled') return;
-  conversations.set(activeId, createConversation(activeId, current().interest));
+  const fresh = current().source === 'consultation' ? createConsultationConversation(current().contact,questions[0].text) : createConversation(activeId,current().interest);
+  conversations.set(activeId,fresh);
   offerForm.hidden = true; find('offer-toggle').setAttribute('aria-expanded', 'false');
   input.value = ''; feedback.textContent = ''; render(); input.focus();
 });
@@ -169,7 +185,12 @@ function renderOrders() {
    card.append(element('div','Vui lòng kiểm tra thông tin doanh nghiệp, gói và tổng tiền trước khi thanh toán.','cf-order-hint'));
    const actions = element('div',undefined,'cf-offer-actions');
    actions.append(orderAction('Thanh toán',()=>transition(c=>startDemoPayment(c,order.id))), orderAction('Huỷ',()=>transition(c=>cancelDemoOrder(c,order.id)),true));
-   card.append(actions);
+   const sandboxButton=orderAction('Thanh toán qua SePay Sandbox',async()=>{
+    sandboxButton.disabled=true;
+    try{await startSandboxCheckout(order);}catch(error){offerFeedback.textContent=error.message;sandboxButton.disabled=false;}
+   });
+   actions.append(sandboxButton);
+   card.append(actions,element('div','SePay Sandbox mở trang thử nghiệm của SePay, không dùng QR Vietcombank thật và không chuyển tiền thật.','cf-order-hint'));
   }
   if (order.status === 'awaiting_payment') {
    const payment = element('div',undefined,'cf-order-payment');
@@ -229,18 +250,30 @@ function simulateReceipt(wrongAmount = false) {
   const next = applyDemoReceipt(current(), { source:'demo-system', id:crypto.randomUUID(), orderId:previous.id, amount:previous.amount + (wrongAmount ? -1 : 0), currency:'VND', direction:'credit' });
   conversations.set(activeId,next); offerFeedback.textContent = ''; render();
   if (previous.status !== 'paid' && activeOrder(next).status === 'paid') {
-   document.querySelector('#payment-success-copy').textContent = `Mô phỏng: đã nhận ${money(previous.amount)} cho ${previous.company}, gói ${previous.packageName}. Không phải xác nhận thanh toán hoặc kích hoạt dịch vụ thật.`;
-   successPopup.showModal();
+   offerFeedback.textContent = 'Đã mô phỏng nhận đủ tiền trong chat. Đây không phải IPN SePay; popup thanh toán thành công chỉ mở sau xác nhận của backend.';
   }
  } catch(error) { offerFeedback.textContent = error.message; }
 }
 find('simulate-receipt').addEventListener('click',()=>simulateReceipt());
 find('simulate-wrong-amount').addEventListener('click',()=>simulateReceipt(true));
 document.querySelector('#payment-success-close').addEventListener('click',()=>successPopup.close());
-successPopup.addEventListener('close',()=>find('consult-close').focus());
+successPopup.addEventListener('close',()=>{if(dialog.open)find('consult-close').focus();else document.querySelector('#sepay-return button')?.focus();});
+initSandboxReturn();
 
 find('bank-qr-reset').addEventListener('click', () => {
  if (bankQrUrl.startsWith('blob:')) URL.revokeObjectURL(bankQrUrl);
  bankQrUrl = demoQrUrl; bankQrIsDemo = true; find('bank-qr-image').value = ''; renderOrders();
  offerFeedback.textContent = 'Đã dùng lại QR giả lập CloudFit. Không chuyển tiền thật.';
+});
+
+// This event is emitted only after purchase-request returns saved:true for the same ID.
+document.addEventListener('cloudfit:consultation-saved', event => {
+ try {
+  const conversation=createConsultationConversation(event.detail,questions[0].text);
+  activeId=conversation.customerId;
+  if(!current())conversations.set(activeId,conversation);
+  input.value='';feedback.textContent='';offerFeedback.textContent='';offerForm.hidden=true;
+  find('offer-toggle').setAttribute('aria-expanded','false');
+  render();if(!dialog.open)dialog.showModal();dialog.scrollTop=0;find('consult-close').focus();
+ } catch { /* An invalid frontend event never creates a request or exposes another customer's data. */ }
 });

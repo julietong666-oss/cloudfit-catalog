@@ -26,23 +26,28 @@ export function createPurchaseForm(product){
  const name=input('Họ và tên','contact_name','text','name');name.maxLength=120;
  const phone=input('Số điện thoại','phone','tel','tel');phone.pattern='[+0-9 ()-]{8,24}';phone.maxLength=24;phone.inputMode='tel';
  const consent=document.createElement('label');consent.className='cf-consent';const check=document.createElement('input');check.type='checkbox';check.required=true;
- consent.append(check,document.createTextNode('Tôi đồng ý dùng tên và số điện thoại để liên hệ tư vấn giải pháp và gói dịch vụ phù hợp; thông tin được gửi đến người phụ trách qua Telegram.'));fields.append(consent);
+ consent.append(check,document.createTextNode('Tôi đồng ý dùng tên và số điện thoại để liên hệ tư vấn giải pháp và gói dịch vụ phù hợp; thông tin hoá đơn thanh toán thử nghiệm được thông báo đến người phụ trách qua Telegram sau khi SePay xác nhận.'));fields.append(consent);
  const trap=document.createElement('input');trap.name='website';trap.type='text';trap.tabIndex=-1;trap.autocomplete='off';trap.hidden=true;fields.append(trap);
  const button=document.createElement('button');button.type='submit';button.textContent='Gửi yêu cầu tư vấn';fields.append(button);
  const status=document.createElement('p');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
- let requestId=crypto.randomUUID(),busy=false,saved=false;
+ let requestId=crypto.randomUUID(),busy=false,saved=false,handoff;
+ const continueChat=document.createElement('button');continueChat.type='button';continueChat.textContent='Tiếp tục tư vấn trực tiếp';continueChat.hidden=true;
+ const openChat=()=>{if(handoff)form.dispatchEvent(new CustomEvent('cloudfit:consultation-saved',{bubbles:true,detail:handoff}));};
+ continueChat.addEventListener('click',openChat);
  const storageKey=`cf-purchase-${product.id}`;
  try{const previous=sessionStorage.getItem(storageKey);if(/^[0-9a-f-]{36}$/i.test(previous||''))requestId=previous;}catch{}
  const interest=document.createElement('p');interest.textContent=`Gói quan tâm: ${product.name}`;
- form.append(heading,description,interest,fields,status);
+ form.append(heading,description,interest,fields,status,continueChat);
  form.addEventListener('submit',async event=>{
   event.preventDefault();if(busy||saved||!form.reportValidity())return;
   busy=true;fields.disabled=true;form.setAttribute('aria-busy','true');button.textContent='Đang gửi yêu cầu tư vấn…';status.textContent='Đang gửi yêu cầu tư vấn…';
   try{
    try{sessionStorage.setItem(storageKey,requestId);}catch{}
-   await submitPurchase({request_id:requestId,product_id:product.id,contact_name:name.value.trim(),phone:phone.value,consent:check.checked,website:trap.value});
+   const result=await submitPurchase({request_id:requestId,product_id:product.id,contact_name:name.value.trim(),phone:phone.value,consent:check.checked,website:trap.value});
    saved=true;status.textContent='Đã nhận yêu cầu tư vấn. Nhân viên sẽ liên hệ để tìm hiểu nhu cầu và đề xuất gói dịch vụ phù hợp.';button.textContent='Đã nhận yêu cầu tư vấn';
    try{sessionStorage.removeItem(storageKey);}catch{}
+   handoff={requestId:result.request_id,productId:product.id,productName:product.name,contactName:name.value.trim(),phone:phone.value};
+   continueChat.hidden=false;openChat();
   }catch(error){
    status.textContent=error.message||'Chưa xác nhận được yêu cầu tư vấn đã lưu. Vui lòng thử lại.';button.textContent='Gửi lại yêu cầu tư vấn';
    if(error.code==='request_conflict'){requestId=crypto.randomUUID();try{sessionStorage.removeItem(storageKey);}catch{}status.textContent='Yêu cầu tư vấn trước đã được lưu với thông tin khác. Nếu muốn gửi thông tin hiện tại thành yêu cầu tư vấn mới, bấm Gửi lại yêu cầu tư vấn.';}

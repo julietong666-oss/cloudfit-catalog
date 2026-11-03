@@ -31,5 +31,6 @@ export function answerConversation(conversation, raw) {
   const step = conversation.step + 1;
   const response = step < questions.length ? questions[step].text
     : 'Cảm ơn bạn đã chia sẻ. Thông tin đã được tổng hợp trong bản mẫu để người phụ trách xem xét giải pháp và gói phù hợp. Ở hệ thống thật, admin sẽ trao đổi thêm trước khi đề xuất; chưa phát sinh mua gói hoặc thanh toán.';
-  return { ...conversation, answers, step, messages: [...conversation.messages, { role: 'customer', text }, { role: 'admin', text: response }] };
+  const finalResponse = conversation.source==='consultation' && step===questions.length ? 'Cảm ơn bạn. Phần nhu cầu bổ sung hiện chỉ được giữ trong trang này; chưa có kết nối chat trực tuyến hoặc lưu câu trả lời vào hệ thống. Yêu cầu tư vấn ban đầu đã được tiếp nhận; nhân viên sẽ liên hệ theo thông tin bạn đã gửi.' : response;
+  return { ...conversation, answers, step, messages: [...conversation.messages, { role: 'customer', text }, { role: 'admin', text: finalResponse }] };
 }

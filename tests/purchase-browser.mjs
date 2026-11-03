@@ -1,4 +1,4 @@
-// Start tests/serve-fixtures.mjs first. All external requests are intercepted;
+// Start tests/serve-fixtures.mjs first. Only visual CDN assets may load; all external APIs are intercepted;
 // this suite must never submit to real Supabase or Telegram.
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 import assert from 'node:assert/strict';
@@ -23,7 +23,7 @@ try {
     }
     return route.fulfill({status:201,json:{saved:true,request_id:data.request_id}});
    }
-   if (url.origin === origin) return route.continue();
+   if (url.origin === origin || (url.protocol==='https:' && ['cdn.tailwindcss.com','fonts.googleapis.com','fonts.gstatic.com'].includes(url.hostname))) return route.continue();
    return route.abort();
   });
   const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
@@ -47,19 +47,31 @@ try {
   await form.locator('input[type=checkbox]').check();
   await form.getByRole('button',{name:'Gửi yêu cầu tư vấn',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('.cf-purchase')?.getAttribute('aria-busy')==='true');
-  assert.equal(await form.locator('button').isDisabled(),true);
+  assert.equal(await form.locator('button[type=submit]').isDisabled(),true);
   await form.evaluate(f=>f.dispatchEvent(new Event('submit',{cancelable:true})));
   await page.waitForFunction(()=>document.querySelector('.cf-purchase button')?.textContent==='Đang gửi yêu cầu tư vấn…');
   assert.equal(attempts,1,'busy state prevents double submission');
+  assert.equal(await page.locator('#consult-dialog').isVisible(),false);
   release();
   await form.getByRole('button',{name:'Gửi lại yêu cầu tư vấn',exact:true}).waitFor();
   assert.equal(await form.locator('[name=contact_name]').inputValue(),'Khách giả lập');
+  assert.equal(await page.locator('#consult-dialog').isVisible(),false,'API failure must not open chat');
   assert.ok(!(await form.locator('[role=status]').textContent()).includes('Đã nhận yêu cầu tư vấn.'));
   await form.getByRole('button',{name:'Gửi lại yêu cầu tư vấn',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('.cf-purchase [role=status]')?.textContent.startsWith('Đã nhận yêu cầu tư vấn.'));
   assert.equal(await form.locator('[role=status]').textContent(),'Đã nhận yêu cầu tư vấn. Nhân viên sẽ liên hệ để tìm hiểu nhu cầu và đề xuất gói dịch vụ phù hợp.');
   assert.equal(ids[0],ids[1]);
-  assert.equal(await form.locator('button').isDisabled(),true);
+  await page.locator('#consult-dialog').waitFor({state:'visible'});
+  assert.equal(await page.locator('#consult-owner').textContent(),'Chờ phân công');
+  for(const value of ['Khách giả lập','0000000000','Fixture A',ids[1]]) assert.ok((await page.locator('#consult-summary').textContent()).includes(value));
+  assert.equal(await page.locator('#consult-admin-tools').isVisible(),false);
+  assert.equal(await page.locator('.cf-chat-directory').isVisible(),false);
+  for(let i=0;i<5;i++)await page.locator('#consult-suggestions button').first().click();
+  assert.equal(await page.locator('#consult-admin-tools').isVisible(),false,'real lead cannot enter demo checkout');
+  await page.getByRole('button',{name:'Đóng khung tư vấn',exact:true}).click();
+  await form.getByRole('button',{name:'Tiếp tục tư vấn trực tiếp',exact:true}).click();
+  assert.equal(await page.locator('#consult-progress').textContent(),'5/5 thông tin đã chia sẻ');
+  assert.equal(await form.locator('button[type=submit]').isDisabled(),true);
   await form.evaluate(f=>f.dispatchEvent(new Event('submit',{cancelable:true})));
   assert.equal(attempts,2,'saved form prevents repeat submission');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);

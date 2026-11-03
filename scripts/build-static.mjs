@@ -7,6 +7,8 @@ const output = resolve(root, 'dist');
 const assets = [
   'catalog/app.mjs',
   'catalog/chat.mjs',
+  'catalog/consultation-chat.mjs',
+  'catalog/sepay-sandbox.mjs',
   'catalog/chat-order.mjs',
   'catalog/demo-payment-qr.svg',
   'catalog/chat-ui.mjs',
