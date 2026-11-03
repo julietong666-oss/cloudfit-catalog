@@ -69,7 +69,22 @@ export function createPurchaseForm(product){
    status.textContent=unhandled?'Chưa mở được khung chat. Yêu cầu tư vấn vẫn đã lưu; bạn có thể thử lại hoặc để nhân viên liên hệ sau.':'';
   });
   let notifying=false;
-  const backToCatalog=()=>{location.hash='#catalog';document.querySelector('#catalog-heading')?.focus();};
+  const thankYou=()=>{
+   if(document.querySelector('.cf-callback-thanks'))return;
+   const popup=node('dialog',undefined,'cf-callback-thanks');
+   popup.setAttribute('aria-modal','true');popup.setAttribute('aria-labelledby','callback-thanks-title');popup.setAttribute('aria-describedby','callback-thanks-description');
+   const close=node('button','×','cf-callback-thanks-close');close.type='button';close.setAttribute('aria-label','Đóng lời cảm ơn và về trang chủ');
+   const icon=node('span','check_circle','material-symbols-outlined cf-callback-thanks-icon');icon.setAttribute('aria-hidden','true');
+   const title=node('h2','Cảm ơn quý khách đã tin tưởng CloudFit!');title.id='callback-thanks-title';
+   const description=node('p','Yêu cầu tư vấn của quý khách đã được chuyển đến đội ngũ CloudFit. Xin vui lòng chú ý điện thoại và tin nhắn Zalo; nhân viên sẽ liên hệ qua số quý khách đã cung cấp để lắng nghe nhu cầu và tư vấn gói dịch vụ phù hợp.');description.id='callback-thanks-description';
+   const done=node('button','Đã hiểu, về trang chủ','cf-callback-thanks-done');done.type='button';
+   close.addEventListener('click',()=>popup.close());done.addEventListener('click',()=>popup.close());
+   popup.addEventListener('close',()=>{
+    popup.remove();location.hash='';
+    requestAnimationFrame(()=>{const heading=document.querySelector('main h1');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}window.scrollTo({top:0,behavior:'instant'});});
+   },{once:true});
+   popup.append(close,icon,title,description,done);document.body.append(popup);popup.showModal();done.focus();
+  };
   const callbackFeedback=()=>{
    if(handoff.callbackState==='processing')status.textContent='Thông báo đang được xử lý. Yêu cầu tư vấn vẫn đã lưu; không cần đăng ký lại.';
    else if(handoff.callbackState==='unknown')status.textContent='Chưa xác nhận được việc gửi thông báo. Yêu cầu tư vấn vẫn đã lưu; vui lòng liên hệ hotline nếu cần hỗ trợ.';
@@ -77,13 +92,13 @@ export function createPurchaseForm(product){
   later.disabled=['processing','unknown'].includes(handoff.callbackState);
   later.addEventListener('click',async()=>{
    if(notifying)return;
-   if(handoff.callbackState==='sent'){backToCatalog();return;}
+   if(handoff.callbackState==='sent'){thankYou();return;}
    if(!handoff.callbackReceipt){status.textContent='Yêu cầu trước đã được lưu nhưng phiên này chưa có biên nhận gửi thông báo gọi lại. Vui lòng gọi hotline; không cần đăng ký lại.';return;}
    notifying=true;later.disabled=true;chat.disabled=true;later.textContent='Đang thông báo để nhân viên gọi lại…';
    status.textContent='Yêu cầu tư vấn đã lưu. Đang gửi thông báo gọi lại…';
    try{
     const result=await requestContactLater(handoff);handoff.callbackState=result.status;store('saved');
-    if(result.status==='sent'){status.textContent='Đã thông báo để nhân viên gọi lại.';backToCatalog();}
+    if(result.status==='sent'){status.textContent='Đã thông báo để nhân viên gọi lại.';thankYou();}
     else if(result.status==='failed')status.textContent='Yêu cầu tư vấn vẫn đã lưu. Chưa gửi được thông báo gọi lại; vui lòng thử lại hoặc gọi hotline.';
     else callbackFeedback();
    }catch(error){status.textContent=error?.code==='callback_rate_limited'?'Yêu cầu tư vấn vẫn đã lưu. Vui lòng chờ một phút trước khi thử gửi lại thông báo gọi lại.':'Yêu cầu tư vấn vẫn đã lưu. Chưa xác nhận được thông báo gọi lại; bạn có thể kiểm tra lại hoặc gọi hotline.';}
@@ -96,7 +111,7 @@ export function createPurchaseForm(product){
    try{
     const result=await requestContactLater({...handoff,action:'status'});
     handoff.callbackState=result.status==='not_requested'?undefined:result.status;store('saved');
-    if(result.status==='sent'){backToCatalog();return;}
+    if(result.status==='sent'){thankYou();return;}
     status.textContent='Yêu cầu tư vấn vẫn đã lưu. Bạn có thể thử gửi thông báo gọi lại.';callbackFeedback();
    }catch{status.textContent='Chưa kiểm tra được trạng thái thông báo. Yêu cầu tư vấn vẫn đã lưu; vui lòng thử lại sau.';}
    finally{recheck.disabled=false;updateButtons();}

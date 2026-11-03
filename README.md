@@ -1,3 +1,7 @@
+# Popup cảm ơn yêu cầu gọi lại — 03/11/2026
+
+Sau khi backend xác nhận thông báo gọi lại đã gửi, hiện popup cảm ơn và nhắc khách chú ý điện thoại/Zalo. Nút Đã hiểu, nút đóng hoặc Escape đều đưa khách về đầu trang chủ; lỗi gửi không hiện popup thành công. Giữ biên nhận và chống gửi trùng, không sửa backend/DB/SePay. 98 tests, check/build và browser 390/1440px đạt; không gửi thêm tin Telegram thử thật.
+
 # Thông báo gọi lại — 03/11/2026
 
 Nhóm nhận mới **Recall**, bot callback riêng với `TELEGRAM_CALLBACK_BOT_TOKEN` và `TELEGRAM_CALLBACK_CHAT_ID`. Đã xác minh bot/nhóm/quyền gửi qua Telegram Bot API (GET health ready), phát hành `consultation-callback` v4 và `purchase-request` v12. Chỉ sau đăng ký lưu thành công và khách chọn Để nhân viên liên hệ sau mới gửi thông báo; claim database chống trùng, giữ lead khi lỗi. Không đổi schema/RLS/SePay/bot thanh toán. 97 tests, PostgreSQL cục bộ, Python, Deno, check/build và browser mobile/desktop đạt. Chưa gửi tin thử thật. Hướng dẫn và danh sách file: [telegram-callback-setup-2026-11-03.md](Docs/telegram-callback-setup-2026-11-03.md).
