@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { summarizePurchase } from '../supabase/functions/_shared/gemini.mjs';
 import { createHandler } from '../supabase/functions/telegram-notify/handler.mjs';
 const productName = 'Gói thử';
-const good = { candidates: [{ finishReason: 'STOP', content: { parts: [{ text: JSON.stringify({ summary: 'Có yêu cầu đăng ký mua Gói thử.' }) }] } }] };
+const good = { candidates: [{ finishReason: 'STOP', content: { parts: [{ text: JSON.stringify({ summary: 'Có yêu cầu tư vấn Gói thử.' }) }] } }] };
 
 test('Gemini receives only product metadata and a header key, never customer information', async () => {
   const result = await summarizePurchase({ productName, apiKey:'test-only', contact_name:'private', phone:'private', fetchImpl:async(url,init)=>{

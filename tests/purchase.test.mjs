@@ -34,3 +34,12 @@ test('frontend verifies saved response and retains the same ID for network retri
  await assert.rejects(submitPurchase(input,async()=>Response.json({saved:true,request_id:'wrong'})));
  await assert.rejects(submitPurchase(input,async()=>{throw new TypeError('private network');}),/Kiểm tra mạng/);
 });
+
+test('current intake requires a real package ID before accessing DB (general consultation remains blocked)',async()=>{
+ const h=createIntakeHandler({env,fetchImpl:()=>assert.fail('must not access DB')});
+ for(const product_id of [undefined,null,'']) {
+  const response=await h(request({...input,product_id}));
+  assert.equal(response.status,400);
+  assert.deepEqual(await response.json(),{error:'invalid_request'});
+ }
+});

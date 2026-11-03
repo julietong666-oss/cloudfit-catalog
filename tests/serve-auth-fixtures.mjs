@@ -36,6 +36,6 @@ createServer(async (req, res) => {
     if (!path.startsWith(root + sep)) return send({},403);
     let body = await readFile(path);
     if (url.pathname === '/') body = Buffer.from(body.toString().replace('<h2 id="identity-heading">Tài khoản</h2>', '<h2 id="identity-heading">Tài khoản — HTTP giả lập</h2>'));
-    res.writeHead(200, {'Content-Type':{'.html':'text/html','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css'}[extname(path)] || 'application/octet-stream','Cache-Control':'no-store'}).end(body);
+    res.writeHead(200, {'Content-Type':{'.html':'text/html','.mjs':'text/javascript','.js':'text/javascript','.svg':'image/svg+xml','.css':'text/css'}[extname(path)] || 'application/octet-stream','Cache-Control':'no-store'}).end(body);
   } catch { send({},500); }
 }).listen(4175,'127.0.0.1',() => console.log('AUTH FIXTURES ONLY: http://127.0.0.1:4175'));

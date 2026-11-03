@@ -1,3 +1,55 @@
+# Đã deploy QR giả lập và toàn bộ cập nhật — 2026-11-03
+
+Production **https://cloudfitk.vercel.app** — deployment **dpl_GejSsQc9Mk3XCpFsXrshxvQPXuzx**, **READY**. Phát hành toàn bộ nội dung tư vấn, CTA/chat mẫu, phân công admin mẫu, phiếu mua trong chat, thanh toán giả lập và popup cảm ơn. Tạo sẵn `catalog/demo-payment-qr.svg`; QR chỉ mã hoá `CLOUDFIT DEMO ONLY | NOT A BANK PAYMENT | NO REAL MONEY`, không chứa ngân hàng/tài khoản hoặc lệnh chuyển tiền. Dùng mặc định cho mọi phiếu, vẫn có thể chọn ảnh thay thế hoặc bấm **Dùng lại QR giả lập**.
+
+Cách thử: **Tư vấn trực tiếp** → trả lời 5 câu → **Soạn phiếu xác nhận mua** → **Điền dữ liệu mẫu** → **Gửi phiếu vào chat** → **Thanh toán** để xem QR → trong Góc admin chọn **Mô phỏng nhận đủ tiền** để thấy popup. Thanh toán/huỷ/nhận tiền chỉ là mô phỏng trong bộ nhớ trình duyệt; không đăng ký hoặc kích hoạt gói thật, không gọi dịch vụ ngân hàng. Gửi form tư vấn gói hiện có vẫn dùng API thực như trước; không dùng thông tin thật để thử luồng mẫu.
+
+Backend `telegram-notify` đã phát hành version **9 ACTIVE**, cập nhật cách gọi sang yêu cầu tư vấn cho mẫu Telegram và chỉ dẫn tóm tắt Gemini hiện có. Đã đối chiếu source live trước/sau: handler, xác thực token, claim/chống trùng và transport giữ nguyên; `verify_jwt=false` được giữ đúng cấu hình cũ vì function tự xác thực. Không đổi schema/RLS/RPC/Auth/env/secret và không gửi thử thật.
+
+Kiểm chứng: **54/54 tests**, syntax check, build **18 runtime files**, `git diff --check` đạt. **18/18 assets production HTTP 200 và byte-identical với build.** Browser trước deploy và trên production đạt ở **390/1440px**, gồm phiếu/huỷ, QR mặc định, đổi/reset ảnh, đúng/sai số tiền, từ chối sự kiện sau huỷ, popup chỉ sau xác nhận nhận tiền mô phỏng, tách hội thoại khách hàng và không gửi POST ra dịch vụ thật. QR trong ảnh chụp production giải mã độc lập bằng ZXing cho đúng payload ở cả hai kích thước. Smoke test production chỉ đọc catalog thực, kiểm tìm kiếm/chi tiết/form tư vấn và gói quan tâm trong chat; không submit form thật. Runtime errors Vercel 1 giờ gần nhất: 0; chưa cấu hình drain riêng. Chưa kiểm nhận Telegram thật hoặc tiền thật trong đợt này.
+
+Deployment từ snapshot source local (base Git `5ac1881`, có thay đổi chưa commit), không commit/push Git. Bản trước để rollback frontend: `dpl_FHZL6EyZVfq9L7bdUQTHeKSrVoGs`; backend trước đó: telegram-notify v8. Hash runtime và bằng chứng lưu tại `Docs/consultation-release-2026-11-03.json`. Tài liệu lịch sử “chưa deploy” phía dưới đã được mốc này thay thế. Công cụ tạo/giải mã QR chỉ dùng trong `/tmp/cloudfit-qr-tools`; không thêm dependency vào runtime website.
+
+# Phiếu mua và thanh toán trong chat mẫu — 2026-11-02 (local, chưa deploy)
+
+Theo lựa chọn của chủ dự án, mở rộng **bản mẫu tương tác**, chưa kết nối thanh toán thật. Sau 5 bước tư vấn, Góc admin cho soạn và gửi phiếu vào hội thoại: tên pháp lý doanh nghiệp, mã số thuế, địa chỉ, đại diện/liên hệ, điện thoại, email, gói, số người dùng, thời hạn và tổng thanh toán VND đã gồm thuế/phí. Có điền dữ liệu giả lập; giá mẫu 12 triệu chỉ phục vụ thử giao diện, không phải báo giá.
+
+Khách xem phiếu ngay trong chat, có **Thanh toán** và **Huỷ**. Thanh toán chỉ chuyển `offered → awaiting_payment`, hiện QR và nội dung chuyển khoản theo mã phiếu. Admin mẫu có thể chọn **ảnh QR ngân hàng cố định** từ máy (PNG/JPG/WebP ≤5 MB); cùng một ảnh được dùng cho tất cả phiếu/khách trong trang. Ảnh chỉ ở bộ nhớ với blob URL, không tải lên dịch vụ ngoài, không lưu qua reload. Chưa có ảnh QR doanh nghiệp thật trong repository; khi chưa chọn ảnh, UI hiển thị vị trí chờ QR, không tạo mã ngân hàng giả.
+
+**Chỉ sự kiện nhận đủ tiền khớp phiếu mới chuyển sang `paid` và mở popup “Đã đăng ký gói thành công” kèm lời cảm ơn.** Bản mẫu có công cụ “Mô phỏng hệ thống thanh toán” riêng với hai ca nhận đủ tiền/sai số tiền, không có nút khách tự xác nhận đã nhận tiền. Mới gửi phiếu, mở QR, sai số tiền, sai phiếu/loại tiền, giao dịch ghi nợ hoặc thông báo sau huỷ đều không báo đăng ký thành công. Sự kiện lặp không thêm thông báo thành công; phiếu đã trả không huỷ/làm lại; chỉ tạo phiếu mới sau huỷ và giữ lịch sử phiếu cũ. Mọi kết quả thành công được ghi rõ là mô phỏng.
+
+Không có order/payment backend, webhook ngân hàng, kích hoạt gói hoặc xác nhận chuyển khoản thật. Logic ở client chỉ phục vụ thiết kế, không được dùng làm bằng chứng thanh toán. Khi triển khai thật cần backend xác minh sự kiện từ dịch vụ nhận tiền, đối chiếu đúng tài khoản/mã phiếu/số tiền/VND và cập nhật thanh toán/đăng ký nguyên tử, chống lặp; phiếu đã huỷ nhưng tiền đến cần đối soát. Không đổi DB/schema/RLS/RPC/env/xác thực; không gửi dữ liệu thật vào Supabase/Telegram và chưa deploy.
+
+Đã kiểm: 54/54 Node tests; `check`, `build` (17 files), cú pháp script browser và `git diff --check`. Playwright với Chrome 2 đạt luồng chat cũ và luồng phiếu/huỷ/QR/popup ở 390/1440px; chặn mọi API ngoài, không phát sinh POST thật. Ảnh test upload chỉ là ảnh PNG 1 pixel, không phải QR ngân hàng. Đã kiểm ảnh giao diện mobile/desktop. Chạy `node tests/serve-fixtures.mjs`, sau đó `npm run test:checkout:ui` với `PLAYWRIGHT_MODULE`/`CHROME_PATH` như phần dưới. Chưa kiểm nhận tiền, giao dịch hoặc thông báo khách hàng thật.
+
+File thêm: `catalog/chat-order.mjs`, `tests/chat-order.test.mjs`, `tests/chat-order-browser.mjs`. File sửa: `catalog/chat-ui.mjs`, `catalog/chat.css`, `code.html`, `scripts/build-static.mjs`, `package.json`, `README.md`. Giữ thay đổi các lần trước.
+
+# Chat tư vấn mẫu — 2026-11-02 (local, chưa deploy)
+
+CTA trên header đã đổi thành **Tư vấn trực tiếp**, mở dialog chat theo thiết kế CloudFit. **Đăng nhập Admin** chuyển xuống footer, giữ route `#identity` và module xác thực hiện có. Chat có 5 bước: quy mô người dùng nội bộ/khách hàng cuối, bối cảnh công ty, mong muốn, ngân sách, thời gian triển khai. Có gợi ý trả lời, nhập tự do, tóm tắt cập nhật, làm lại và giữ ngữ cảnh gói đang xem nếu có.
+
+Tên admin phụ trách xuất hiện trên đầu hội thoại và trong phần thông tin khách hàng. Mở **Xem phân công khách hàng · dữ liệu mẫu** để xem ba khách hàng mẫu, admin phụ trách và tiến độ; chọn từng khách để kiểm tra các hội thoại độc lập. Tên admin, khách hàng và phân công là fixture của bản thiết kế, không lấy từ Auth hoặc DB thật. Không hiển thị trạng thái online hoặc xác nhận đã gửi cho admin thật.
+
+Phạm vi: bản mẫu tương tác với phản hồi theo kịch bản cố định, không phải chat trực tiếp đã tích hợp. Module chat không gọi API/AI, không ghi Supabase/Telegram, không dùng localStorage/sessionStorage; nội dung chỉ ở bộ nhớ trang, tải lại sẽ mất. Chưa thay đổi schema, RLS, RPC, biến môi trường hoặc xác thực. Chưa có backend hội thoại, quyền xem theo phân công, phân công thật, giao diện admin trả lời hoặc Realtime. Không dùng dữ liệu khách hàng thật để thử mẫu.
+
+Đã kiểm: 47/47 Node tests; `check`, `build` (16 runtime files), `git diff --check`. Browser bằng Playwright với Chrome 2 đạt ở 390/1440px: mở/đóng/Escape/trả focus, đủ 5 bước, tóm tắt, phân công, tách biệt khách hàng, làm lại, render nội dung như văn bản, không tràn dialog, CTA không bị auth đổi nhãn và link Admin ở footer hoạt động. Đã xem ảnh chụp mobile/desktop. API ngoài bị chặn trong browser test; chỉ cho phép CDN Tailwind và font hiện có. Không kiểm chat với admin thật vì chưa có backend. Không commit/push/deploy.
+
+Chạy `node tests/serve-fixtures.mjs` rồi `npm run test:chat:ui`; dùng `PLAYWRIGHT_MODULE` và `CHROME_PATH` trỏ tới thư viện/trình duyệt có sẵn. Phiên này dùng `CHROME_PATH='/Applications/Google Chrome 2.app/Contents/MacOS/Google Chrome'`; Chrome mặc định từng bị `spawn EPERM`.
+
+File của bản chat: `catalog/chat.mjs`, `catalog/chat-ui.mjs`, `catalog/chat.css`, `code.html`, `scripts/build-static.mjs`, `package.json`, `tests/chat.test.mjs`, `tests/chat-browser.mjs`, `tests/layout.test.mjs`, `README.md`. Giữ các thay đổi nội dung tư vấn ở lần trước.
+
+# Nội dung tư vấn — 2026-11-02 (local, chưa deploy)
+
+Đã đổi form trong chi tiết gói sang **Đăng ký tư vấn gói dịch vụ**, mô tả theo nhu cầu/số lượng người dùng/ngân sách, CTA **Gửi yêu cầu tư vấn**, đồng ý liên hệ và phản hồi đang gửi/lỗi/thành công. Form hiển thị tên gói quan tâm; nút mở là **Đăng ký tư vấn gói này**. Giữ các trường, validation, UUID gửi lại, khóa gửi đồng thời và chỉ báo thành công sau API xác nhận lưu. Không thêm thanh toán/kích hoạt hoặc tư vấn AI. Mẫu Telegram và câu hướng dẫn tóm tắt Gemini hiện có chỉ đổi cách gọi sang yêu cầu tư vấn; giữ transport và luồng thông báo.
+
+**Phạm vi đã được chủ dự án chốt trong phiên: giữ nguyên schema, hoàn tất luồng có gói.** Luồng chưa chọn gói chưa được triển khai: handler bắt buộc `product_id`; RPC chỉ nhận gói tồn tại và bảng `purchase_requests.product_id` có `NOT NULL` cùng khóa ngoại tới `products`. Không thể lưu yêu cầu chung với hợp đồng hiện tại mà không gán sai gói. Chưa thêm CTA chung dẫn vào một luồng không gửi được. Giữ nguyên schema, SQL/RPC, RLS, API intake, cấu hình và thông tin xác thực; không chuẩn bị hoặc áp dụng thay đổi nullable/RPC trong lần này theo quyết định trên.
+
+Kiểm tra: 43/43 Node tests đạt; `check`, `build` (13 files), kiểm tra cú pháp script browser và `git diff --check` đạt. API/config/SQL intake khớp hash baseline; form được loại khỏi kiểm tra byte vì nội dung được sửa theo yêu cầu, baseline lịch sử giữ nguyên. Playwright chưa chạy được vì Chrome `spawn EPERM`; chưa xác nhận giao diện/responsive và thao tác form bằng browser. Không kiểm luồng lưu DB/nhận Telegram thật, không gửi dữ liệu thử vào dịch vụ thật. Không commit/push/deploy hoặc áp dụng DB.
+
+`tests/purchase-browser.mjs` nay chạy với `node tests/serve-fixtures.mjs` tại port 4174: chặn tất cả request ngoài, giả lập lỗi/thành công của API, kiểm validation, gói quan tâm, khóa gửi trùng, giữ UUID khi gửi lại và trạng thái đã lưu tại 390/1440px. Script không dùng `route.continue()` cho API thật. Có thể chạy bằng `PLAYWRIGHT_MODULE`/`CHROME_PATH` như hướng dẫn phía dưới khi Chrome hoạt động. Nội dung Telegram/Gemini chỉ được cập nhật trong source backend, chưa được triển khai lên Edge Function.
+
+Các mục bên dưới là lịch sử dự án.
+
 # UI production — 2026-10-30
 
 Đã tích hợp Mekong Cloud Horizon từ `Docs/DESIGN.md` lên https://cloudfitk.vercel.app, deployment `dpl_XWtBRZ3V5RiWD4QHYPQh2h6uY8XM` READY. Mốc trước sửa: `dpl_GHn83S3EayLGaTcevc6h2frk55YF`, được đối chiếu byte trực tiếp với production.

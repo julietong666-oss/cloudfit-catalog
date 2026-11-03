@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-03",
+  "production": "https://cloudfitk.vercel.app",
+  "deployment": "dpl_GejSsQc9Mk3XCpFsXrshxvQPXuzx",
+  "previousDeployment": "dpl_FHZL6EyZVfq9L7bdUQTHeKSrVoGs",
+  "baseCommit": "5ac1881824f4492fe9e73193e14ee432a0e8f224",
+  "sourceStatus": "local-workspace-uncommitted",
+  "telegramFunctionVersion": 9,
+  "qrPayload": "CLOUDFIT DEMO ONLY | NOT A BANK PAYMENT | NO REAL MONEY",
+  "runtimeFiles": {
+    "catalog/app.mjs": "2426f17d99034dc23b5c307a3329eb0c2acb10e57facda1123c7717ad5b238e6",
+    "catalog/auth-ui.mjs": "69b33caa0fafd4484275ef4d005647bce635fbb85bfdcf88e3c686f1df14e7b9",
+    "catalog/auth.mjs": "44527a0f24834fd0c146280c1290dfa75c406f2d327c8b685ecf6412ec0d9857",
+    "catalog/catalog.css": "ce837b6b41ed2b1c0a52136b8c2afc003d7c084fa1627ff748f14b42cbc53a30",
+    "catalog/chat-order.mjs": "ae3ae462dbb54e78923e79947b9e5a4cd21606fffd5eab21c52999a73930c87f",
+    "catalog/chat-ui.mjs": "fc9cd6bad542acd7ebb4ebd92c906d9ec694f8f1a8042ccf4402d7dd64f18956",
+    "catalog/chat.css": "041c885a1bea8239e7503f70adb96f8d2dfa2a7d4eecc9e06fe731adbb9fd11e",
+    "catalog/chat.mjs": "b6bf962f7105b0d39502830352cda38a22dff400ebbb76afe3a0d108d2632c6b",
+    "catalog/data.mjs": "70d63b0e131f9bffaf5a7cb3b90af261affcc7829a8d8bfe0351e366fdea6ddb",
+    "catalog/demo-payment-qr.svg": "206888b9843d4d979a39dd9bb376206f9597467b750cc0f2400dcc7832c89111",
+    "catalog/design-ui.mjs": "59f8ddcb52fe548d1737656a009b9d6db72a7cc6f084dc0211f177485a75da47",
+    "catalog/logic.mjs": "3a8ffe8fbca303ae353e094767ffc91a23f4afb002abf27f311434a54a6b3cdb",
+    "catalog/purchase.mjs": "0eea8ba2288643efe5b0b5a1b5b4dfc76bd98ce6a2fe176ee4456d0cfff8a7a8",
+    "catalog/supabase-config.mjs": "1df6d6d80e158c5ec807e372ef39584d679fbec466ed18524053104a13b81bfd",
+    "catalog/vendor/supabase-2.118.0.js": "ee3be8de192b97cb1d73d1e95d6b82bb1f6b658c0f97c4ef757fc331996ed3d3",
+    "catalog/vendor/supabase-LICENSE": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+    "code.html": "b2f8f00c819985a6499ba9f82fbb31f3f2fd45ad05660aefe95ae3cb8b07f741",
+    "index.html": "b2f8f00c819985a6499ba9f82fbb31f3f2fd45ad05660aefe95ae3cb8b07f741"
+  },
+  "status": "READY",
+  "qa": {
+    "unitTests": 54,
+    "syntax": "pass",
+    "buildRuntimeFiles": 18,
+    "productionCheckoutBrowserWidths": [
+      390,
+      1440
+    ],
+    "qrDecodedFromProductionScreenshots": true,
+    "realPayments": 0,
+    "supabaseOrTelegramTestWrites": 0,
+    "runtimeErrorsLastHour": 0,
+    "configuredVercelDrains": 0
+  }
+}

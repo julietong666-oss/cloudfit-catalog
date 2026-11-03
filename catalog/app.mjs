@@ -120,11 +120,11 @@ function renderRoute(focus = false) {
     if (product.sampleNotice) overview.append(element('p', product.sampleNotice, 'cf-notice'));
     const registration = element('aside', undefined, 'cf-registration-panel');
     const introduction = element('div', undefined, 'cf-registration-intro');
-    introduction.append(element('span', 'BƯỚC TIẾP THEO', 'cf-eyebrow'), element('h3', 'Trao đổi về gói dịch vụ'), element('p', 'Để lại thông tin để được liên hệ xác nhận cấu hình và giá phù hợp.'));
+    introduction.append(element('span', 'BƯỚC TIẾP THEO', 'cf-eyebrow'), element('h3', 'Trao đổi về gói dịch vụ'), element('p', 'Để lại thông tin để được tư vấn giải pháp và gói dịch vụ phù hợp với nhu cầu, số lượng người dùng và ngân sách của doanh nghiệp.'));
     if (product.displayPrice) introduction.append(element('p', `Giá trong bản mẫu: ${product.displayPrice} (chưa xác minh)`, 'cf-detail-price'));
     const purchase = createPurchaseForm(product);
     purchase.hidden = true;
-    const choose = action('Đăng ký gói này', () => {
+    const choose = action('Đăng ký tư vấn gói này', () => {
       purchase.hidden = false;
       introduction.hidden = true;
       choose.hidden = true;

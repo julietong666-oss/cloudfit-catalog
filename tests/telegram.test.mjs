@@ -25,7 +25,9 @@ test('Telegram sends the saved request to the configured recipient with a test l
       assert.match(payload.text, /DỮ LIỆU THỬ/);
       assert.match(payload.text, /request-test-1/);
       assert.match(payload.text, /0000000000/);
-      assert.match(payload.text, /chưa xác nhận thanh toán/);
+      assert.match(payload.text, /Có yêu cầu tư vấn gói dịch vụ mới/);
+      assert.match(payload.text, /chưa phát sinh thanh toán/);
+      assert.doesNotMatch(payload.text, /đăng ký mua/);
       assert.equal(payload.text.split('\n').filter(line => line.startsWith('Mã yêu cầu:')).length, 1);
       assert.equal(payload.parse_mode, undefined);
       assert.equal(payload.link_preview_options.is_disabled, true);

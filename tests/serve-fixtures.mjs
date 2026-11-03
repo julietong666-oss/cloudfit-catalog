@@ -28,7 +28,7 @@ createServer(async (req, res) => {
     const path = resolve(root, '.' + (url.pathname === '/' ? '/code.html' : url.pathname));
     if (!path.startsWith(root + '/')) { res.writeHead(403).end(); return; }
     const body = await readFile(path);
-    res.writeHead(200, {'Content-Type': {'.html': 'text/html', '.mjs': 'text/javascript', '.js': 'text/javascript', '.css': 'text/css'}[extname(path)] || 'text/plain'});
+    res.writeHead(200, {'Content-Type': {'.html': 'text/html', '.mjs': 'text/javascript', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.css': 'text/css'}[extname(path)] || 'text/plain'});
     res.end(body);
   } catch { res.writeHead(404).end(); }
 }).listen(4174, '127.0.0.1', () => console.log('TEST FIXTURES ONLY: http://127.0.0.1:4174'));

@@ -4,10 +4,12 @@
   "type": "module",
   "scripts": {
     "start": "node scripts/serve.mjs",
-    "test": "node --test tests/logic.test.mjs tests/data.test.mjs tests/auth.test.mjs tests/telegram.test.mjs tests/telegram-handler.test.mjs tests/gemini.test.mjs tests/purchase.test.mjs tests/layout.test.mjs",
-    "check": "node --check catalog/logic.mjs && node --check catalog/data.mjs && node --check catalog/supabase-config.mjs && node --check catalog/app.mjs && node --check scripts/serve.mjs && node --check catalog/auth.mjs && node --check catalog/auth-ui.mjs && node --check scripts/build-static.mjs && node --check supabase/functions/_shared/telegram.mjs && node --check supabase/functions/telegram-notify/handler.mjs && node --check supabase/functions/_shared/gemini.mjs && node --check catalog/purchase.mjs && node --check supabase/functions/purchase-request/handler.mjs && node --check catalog/design-ui.mjs",
+    "test": "node --test tests/logic.test.mjs tests/data.test.mjs tests/auth.test.mjs tests/telegram.test.mjs tests/telegram-handler.test.mjs tests/gemini.test.mjs tests/purchase.test.mjs tests/layout.test.mjs tests/chat.test.mjs tests/chat-order.test.mjs",
+    "check": "node --check catalog/logic.mjs && node --check catalog/data.mjs && node --check catalog/supabase-config.mjs && node --check catalog/app.mjs && node --check scripts/serve.mjs && node --check catalog/auth.mjs && node --check catalog/auth-ui.mjs && node --check scripts/build-static.mjs && node --check supabase/functions/_shared/telegram.mjs && node --check supabase/functions/telegram-notify/handler.mjs && node --check supabase/functions/_shared/gemini.mjs && node --check catalog/purchase.mjs && node --check supabase/functions/purchase-request/handler.mjs && node --check catalog/design-ui.mjs && node --check catalog/chat.mjs && node --check catalog/chat-ui.mjs && node --check catalog/chat-order.mjs",
     "test:auth:ui": "node tests/serve-auth-fixtures.mjs",
     "build": "node scripts/build-static.mjs",
-    "test:telegram": "node --test tests/telegram.test.mjs tests/telegram-handler.test.mjs tests/gemini.test.mjs"
+    "test:telegram": "node --test tests/telegram.test.mjs tests/telegram-handler.test.mjs tests/gemini.test.mjs",
+    "test:chat:ui": "node tests/chat-browser.mjs",
+    "test:checkout:ui": "node tests/chat-order-browser.mjs"
   }
 }

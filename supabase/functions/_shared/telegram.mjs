@@ -22,7 +22,7 @@ export function formatPurchaseNotification(record, summary = null) {
     timeZone: 'Asia/Ho_Chi_Minh', dateStyle: 'short', timeStyle: 'medium',
   }).format(new Date(createdAt));
   return [
-    `Có đăng ký mua mới${record.is_test === true ? ' — DỮ LIỆU THỬ' : ''}`,
+    `Có yêu cầu tư vấn gói dịch vụ mới${record.is_test === true ? ' — DỮ LIỆU THỬ' : ''}`,
     `Mã yêu cầu: ${id}`,
     `Gói: ${productName}`,
     `Mã gói: ${productId}`,
@@ -31,7 +31,7 @@ export function formatPurchaseNotification(record, summary = null) {
     `Số điện thoại: ${phone}`,
     ...(typeof summary === 'string' && summary.trim() && summary.length <= 360
       ? [`Tóm tắt AI (tham khảo): ${summary.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim()}`] : []),
-    'Đây là yêu cầu đăng ký mua, chưa xác nhận thanh toán.',
+    'Đây là yêu cầu tư vấn gói dịch vụ, chưa phát sinh thanh toán.',
   ].join('\n');
 }
 

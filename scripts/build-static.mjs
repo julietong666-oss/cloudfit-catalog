@@ -6,6 +6,11 @@ const output = resolve(root, 'dist');
 // Publish an explicit app-only set. Documents, tests, SQL and backups stay out.
 const assets = [
   'catalog/app.mjs',
+  'catalog/chat.mjs',
+  'catalog/chat-order.mjs',
+  'catalog/demo-payment-qr.svg',
+  'catalog/chat-ui.mjs',
+  'catalog/chat.css',
   'catalog/design-ui.mjs',
   'catalog/purchase.mjs',
   'catalog/auth.mjs',

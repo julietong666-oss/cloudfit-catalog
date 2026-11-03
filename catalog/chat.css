@@ -1,0 +1,129 @@
+/* CloudFit advisory prototype: follows Docs/DESIGN.md and existing tokens. */
+.cf-chat { --chat-line:#c1c6d6; --chat-soft:#f4f3f7; --chat-blue:#005bbf; width:min(1060px,calc(100% - 48px)); max-width:none; max-height:calc(100dvh - 48px); padding:0; border:1px solid var(--chat-line); border-radius:24px; background:#fff; color:#1a1b1e; font:14px/1.6 'Be Vietnam Pro',sans-serif; box-shadow:0 24px 64px #001a4130; }
+.cf-chat::backdrop { background:#001a4170; backdrop-filter:blur(4px); }
+.cf-chat *, .cf-chat *::before { box-sizing:border-box; }
+.cf-chat [hidden] { display:none!important; }
+.cf-chat h2,.cf-chat h3,.cf-chat p { margin:0; }
+.cf-chat button { font:inherit; cursor:pointer; }
+.cf-chat :focus-visible { outline:3px solid var(--chat-blue); outline-offset:3px; }
+.cf-chat-top { display:flex; align-items:center; gap:16px; padding:20px 24px; border-bottom:1px solid var(--chat-line); }
+.cf-chat-top h2 { font-size:22px; font-weight:600; }
+.cf-chat-top p { font-size:12px; color:#414754; }
+.cf-chat-badge { padding:4px 10px; border-radius:999px; background:#ffdfa0; color:#5c4300; font-size:12px; white-space:nowrap; }
+.cf-chat-close { margin-left:auto; flex-shrink:0; width:44px; height:44px; border:1px solid var(--chat-line); border-radius:50%; background:#fff; color:#414754; font-size:22px!important; }
+.cf-chat-notice { background:var(--chat-soft); color:#414754; padding:12px 24px; font-size:12px; }
+.cf-chat-body { display:grid; grid-template-columns:minmax(0,1fr) 310px; }
+.cf-chat-main { min-width:0; display:flex; flex-direction:column; }
+.cf-chat-person { display:flex; align-items:center; gap:12px; padding:16px 24px; border-bottom:1px solid #efedf1; }
+.cf-chat-avatar { display:grid; place-items:center; width:44px; height:44px; border-radius:50%; background:#d8e2ff; color:#004493; font-weight:700; flex-shrink:0; }
+.cf-chat-person strong { display:block; font-size:16px; }
+.cf-chat-person p { color:#414754; font-size:12px; }
+.cf-chat-messages { height:290px; overflow-y:auto; overscroll-behavior:contain; padding:20px 24px; display:flex; flex-direction:column; gap:16px; scroll-behavior:auto; }
+.cf-chat-message { max-width:90%; align-self:flex-start; overflow-wrap:anywhere; }
+.cf-chat-sender { display:block; margin:0 0 4px 4px; font-size:11px; color:#414754; }
+.cf-chat-message p { padding:12px 16px; border-radius:16px 16px 16px 4px; background:var(--chat-soft); }
+.cf-chat-message--customer { align-self:flex-end; }
+.cf-chat-message--customer p { border-radius:16px 16px 4px 16px; background:#d8e2ff; color:#001a41; }
+.cf-chat-message--customer .cf-chat-sender { text-align:right; margin-right:4px; }
+.cf-chat-composer { padding:16px 24px 20px; border-top:1px solid #efedf1; }
+.cf-chat-composer label { display:block; font-size:12px; font-weight:600; margin-bottom:8px; }
+.cf-chat-suggestions { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.cf-chat-suggestions button { min-height:44px; border:1px solid var(--chat-line); border-radius:999px; padding:8px 12px; color:var(--chat-blue); background:#fff; font-size:12px; }
+.cf-chat-suggestions button:hover,.cf-chat-customer:hover { background:#d8e2ff; }
+.cf-chat-compose-row { display:flex; align-items:flex-end; gap:8px; }
+.cf-chat textarea { width:100%; min-width:0; min-height:52px; max-height:140px; resize:vertical; border:1px solid #727785; border-radius:12px; padding:12px; font:inherit; background:#fff; color:#1a1b1e; }
+.cf-chat-send,.cf-chat-restart { min-height:48px; padding:12px 20px; border:0; border-radius:999px; background:var(--chat-blue); color:#fff; font-weight:600!important; }
+.cf-chat-send { flex-shrink:0; white-space:nowrap; }
+.cf-chat-send:hover,.cf-chat-restart:hover { background:#004493; }
+.cf-chat-feedback { color:#ba1a1a; font-size:12px; }
+.cf-chat-complete { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:20px 24px; border-top:1px solid #efedf1; }
+.cf-chat-complete p { color:#006e2c; font-weight:600; }
+.cf-chat-sidebar { min-width:0; background:#faf9fd; border-left:1px solid var(--chat-line); padding:24px; }
+.cf-chat-sidebar h3 { font-size:16px; font-weight:600; }
+.cf-chat-assignment { margin:16px 0; padding:12px 16px; border:1px solid #c1c6d6; border-radius:12px; background:#fff; }
+.cf-chat-assignment span { display:block; font-size:12px; color:#414754; }
+.cf-chat-assignment strong { display:block; overflow-wrap:anywhere; }
+.cf-chat-progress { color:#006e2c; font-size:12px; margin:12px 0!important; }
+.cf-chat-summary { margin:0; }
+.cf-chat-summary dt { color:#414754; font-size:12px; margin-top:12px; }
+.cf-chat-summary dd { margin:4px 0 0; overflow-wrap:anywhere; font-weight:500; }
+.cf-chat-directory { padding:16px 24px; border-top:1px solid var(--chat-line); }
+.cf-chat-directory summary { cursor:pointer; color:var(--chat-blue); font-weight:600; min-height:44px; padding:10px 0; }
+.cf-chat-directory p { color:#414754; font-size:12px; margin:4px 0 12px; }
+.cf-chat-table-scroll { overflow-x:auto; }
+.cf-chat table { width:100%; border-collapse:collapse; text-align:left; font-size:12px; }
+.cf-chat caption { text-align:left; color:#414754; margin-bottom:8px; }
+.cf-chat th { color:#414754; font-weight:600; background:var(--chat-soft); }
+.cf-chat th,.cf-chat td { padding:10px; border-bottom:1px solid #efedf1; }
+.cf-chat-customer { text-align:left; border:1px solid var(--chat-line); padding:8px 12px; min-height:44px; border-radius:12px; color:var(--chat-blue); background:#fff; }
+.cf-chat-customer[aria-pressed=true] { border-color:var(--chat-blue); background:#d8e2ff; }
+@media(max-width:700px) {
+ .cf-chat { width:calc(100% - 16px); max-height:calc(100dvh - 16px); border-radius:20px; }
+ .cf-chat-top { gap:8px; padding:16px; flex-wrap:wrap; }
+ .cf-chat-top h2 { font-size:18px; }
+ .cf-chat-top p { max-width:200px; }
+ .cf-chat-badge { display:none; }
+ .cf-chat-notice,.cf-chat-person,.cf-chat-composer,.cf-chat-complete,.cf-chat-directory { padding:12px 16px; }
+ .cf-chat-body { grid-template-columns:minmax(0,1fr); }
+ .cf-chat-sidebar { border-left:0; border-top:1px solid var(--chat-line); padding:16px; }
+ .cf-chat-summary { display:grid; grid-template-columns:110px minmax(0,1fr); gap:8px 12px; }
+ .cf-chat-summary dt,.cf-chat-summary dd { margin:0; }
+ .cf-chat-messages { height:260px; padding:16px; }
+ .cf-chat-message { max-width:94%; }
+ .cf-chat-suggestions { gap:6px; }
+ .cf-chat-compose-row { flex-wrap:wrap; }
+ .cf-chat-send { margin-left:auto; }
+}
+
+/* Purchase confirmation remains inside the conversation, with demo controls separate. */
+.cf-chat-message:has(.cf-order-card) { width:100%; max-width:100%; }
+.cf-chat-messages--order { height:520px; }
+.cf-order-card { border:1px solid var(--chat-line); border-radius:16px; padding:20px; background:#fff; overflow-wrap:anywhere; }
+.cf-order-card h3,.cf-order-admin h3 { font-size:16px; font-weight:600; margin:0 0 8px; }
+.cf-order-demo-label { display:block; font-size:11px; color:#795900; letter-spacing:.03em; margin-bottom:8px; }
+.cf-order-state { border-radius:8px; padding:8px 12px; background:#f4f3f7; color:#414754; margin:12px 0; font-size:12px; }
+.cf-order-state--paid { background:#e5f5e8; color:#006e2c; }
+.cf-order-state--awaiting_payment { background:#fff4d6; color:#5c4300; }
+.cf-order-details { display:grid; grid-template-columns:minmax(100px,.7fr) minmax(0,1.3fr); gap:8px 12px; font-size:12px; margin:16px 0; }
+.cf-order-details dt { color:#414754; }
+.cf-order-details dd { margin:0; font-weight:500; }
+.cf-order-price-label { font-size:12px; color:#414754; }
+.cf-order-price { display:block; color:#005bbf; font-size:24px; margin:4px 0 12px; }
+.cf-order-reference { font-size:12px; overflow-wrap:anywhere; margin:8px 0; }
+.cf-order-hint { font-size:12px; color:#414754; margin:12px 0; }
+.cf-offer-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+.cf-order-secondary { background:#fff; border:1px solid #727785; color:#005bbf; border-radius:999px; padding:10px 16px; min-height:48px; }
+.cf-order-secondary:hover { background:#f4f3f7; }
+.cf-order-admin { padding:20px 24px; border-top:1px solid var(--chat-line); background:#faf9fd; }
+.cf-order-admin p { color:#414754; font-size:12px; margin-bottom:12px; }
+.cf-order-panel-title { display:flex; gap:16px; align-items:center; flex-wrap:wrap; justify-content:space-between; }
+.cf-offer-form { margin:20px 0; padding:20px; border:1px solid var(--chat-line); border-radius:16px; background:#fff; }
+.cf-offer-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.cf-offer-fields label,.cf-bank-upload { display:grid; gap:6px; font-size:12px; font-weight:500; }
+.cf-offer-fields input { font:inherit; color:#1a1b1e; background:#fff; width:100%; min-width:0; min-height:48px; border:1px solid #727785; border-radius:8px; padding:10px; }
+.cf-offer-wide { grid-column:1/-1; }
+.cf-payment-simulator { padding:16px; border:1px dashed #987000; border-radius:12px; margin-top:16px; background:#fffaec; }
+.cf-bank-upload { padding:12px 0; }
+.cf-bank-upload input { max-width:100%; min-height:44px; font:inherit; }
+.cf-bank-upload span { font-weight:400; color:#414754; }
+.cf-order-payment { border-top:1px solid var(--chat-line); margin-top:16px; padding-top:16px; }
+.cf-order-payment h4 { font-weight:600; margin-bottom:12px; }
+.cf-bank-qr { background:#fff; image-rendering:pixelated; display:block; width:220px; max-width:100%; height:auto; margin:12px auto; border:1px solid var(--chat-line); border-radius:8px; }
+.cf-bank-qr-placeholder { display:grid; place-items:center; padding:24px; width:220px; max-width:100%; min-height:180px; margin:12px auto; border:2px dashed var(--chat-line); border-radius:12px; background:#f4f3f7; text-align:center; font-size:12px; color:#414754; }
+.cf-payment-success { --chat-blue:#005bbf; width:min(460px,calc(100% - 32px)); border:1px solid #c1c6d6; border-radius:24px; padding:32px; background:#fff; color:#1a1b1e; text-align:center; font:14px/1.6 'Be Vietnam Pro',sans-serif; }
+.cf-payment-success::backdrop { background:#001a4180; }
+.cf-payment-success h2 { font-size:24px; font-weight:600; margin:12px 0; }
+.cf-payment-success p { margin:12px 0; }
+.cf-payment-success :focus-visible { outline:3px solid #005bbf; outline-offset:3px; }
+.cf-success-check { display:grid; place-items:center; width:64px; height:64px; border-radius:50%; background:#e5f5e8; color:#006e2c; margin:0 auto 16px; font-size:32px; }
+@media(max-width:700px) {
+ .cf-order-admin { padding:16px; }
+ .cf-offer-form,.cf-order-card { padding:16px; }
+ .cf-offer-fields { grid-template-columns:minmax(0,1fr); }
+ .cf-order-details { grid-template-columns:minmax(90px,.7fr) minmax(0,1.3fr); }
+ .cf-chat-messages--order { height:560px; }
+}
+
+.cf-chat-top { position:sticky; top:0; z-index:2; background:#fff; }
+.cf-order-enterprise { border-block:1px solid #efedf1; margin-bottom:12px; }
+.cf-order-enterprise summary { color:#005bbf; min-height:44px; padding:10px 0; cursor:pointer; font-size:12px; }
